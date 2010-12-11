@@ -1,0 +1,43 @@
+NAME
+    HTTP::Tiny - A tiny HTTP client
+
+VERSION
+    version 0.001
+
+SYNOPSIS
+        use HTTP::Tiny;
+
+        my $response = HTTP::Tiny->new->get('http://example.com/');
+
+        print "$response->{status} $response->{reason}\n";
+
+        while (my ($k, $v) = each %{$response->{headers}}) {
+            for (ref $v eq 'ARRAY' ? @$v : $v) {
+                print "$k: $_\n";
+            }
+        }
+
+        print $response->{content} if defined $response->{content};
+
+DESCRIPTION
+    This is a very simple HTTP/1.1 client, designed primarily for doing
+    simple GET requests without the overhead of a large framework like
+    LWP::UserAgent.
+
+    It is more correct and more complete than HTTP::Lite. It supports
+    proxies (currently only non-authenticating ones) and redirection. It
+    also correctly resumes after EINTR.
+
+    Additional documentation and improved tests will be forthcoming.
+
+AUTHORS
+    *   Christian Hansen <chansen@cpan.org>
+
+    *   David Golden <dagolden@cpan.org>
+
+COPYRIGHT AND LICENSE
+    This software is copyright (c) 2010 by Christian Hansen.
+
+    This is free software; you can redistribute it and/or modify it under
+    the same terms as the Perl 5 programming language system itself.
+
