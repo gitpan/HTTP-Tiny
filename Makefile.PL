@@ -30,7 +30,7 @@ my %WriteMakefileArgs = (
     'Errno' => '0',
     'IO::Socket' => '0'
   },
-  'VERSION' => '0.001',
+  'VERSION' => '0.002',
   'test' => {
     'TESTS' => 't/*.t'
   }

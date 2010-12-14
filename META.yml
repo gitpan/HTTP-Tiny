@@ -12,7 +12,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.31
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.102341, CPAN::Meta::Converter version 2.102400'
+generated_by: 'Dist::Zilla version 4.102346, CPAN::Meta::Converter version 2.102400'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -29,10 +29,10 @@ no_index:
 provides:
   HTTP::Tiny:
     file: lib/HTTP/Tiny.pm
-    version: 0.001
+    version: 0.002
   HTTP::Tiny::Handle:
     file: lib/HTTP/Tiny.pm
-    version: 0.001
+    version: 0.002
 requires:
   Carp: 0
   Errno: 0
@@ -40,4 +40,4 @@ requires:
   perl: 5.006
 resources:
   repository: git://ec2.dagolden.com/p5-http-tiny.git
-version: 0.001
+version: 0.002

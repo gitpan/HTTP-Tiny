@@ -1,3 +1,4 @@
+# vim: ts=4 sts=4 sw=4 et:
 #
 # This file is part of HTTP-Tiny
 #
@@ -6,16 +7,16 @@
 # This is free software; you can redistribute it and/or modify it under
 # the same terms as the Perl 5 programming language system itself.
 #
-# vim: ts=4 sts=4 sw=4 et:
 package HTTP::Tiny;
 BEGIN {
-  $HTTP::Tiny::VERSION = '0.001';
+  $HTTP::Tiny::VERSION = '0.002';
 }
 use strict;
 use warnings;
 # ABSTRACT: A tiny HTTP client
 
 use Carp ();
+
 
 my @attributes;
 BEGIN {
@@ -42,12 +43,14 @@ sub new {
     return bless $self, $class;
 }
 
+
 sub get {
     my ($self, $url, $args) = @_;
     @_ == 2 || (@_ == 3 && ref $args eq 'HASH')
       or Carp::croak(q/Usage: $http->get(URL, [HASHREF])/);
     return $self->request('GET', $url, $args || {});
 }
+
 
 sub request {
     my ($self, $method, $url, $args) = @_;
@@ -145,8 +148,10 @@ sub _prepare_headers_and_cb {
         }
         else {
             my $content = $args->{content};
-            utf8::downgrade($content, 1)
-              or Carp::croak(q/Wide character in request message body/);
+            if ( $] ge '5.008' ) {
+                utf8::downgrade($content, 1)
+                    or Carp::croak(q/Wide character in request message body/);
+            }
             $request->{headers}{'content-length'} = length $content
               unless $request->{headers}{'content-length'}
                   || $request->{headers}{'transfer-encoding'};
@@ -285,8 +290,10 @@ sub write {
     @_ == 2 || croak(q/Usage: $handle->write(buf)/);
     my ($self, $buf) = @_;
 
-    utf8::downgrade($buf, 1)
-      or croak(q/Wide character in write()/);
+    if ( $] ge '5.008' ) {
+        utf8::downgrade($buf, 1)
+            or croak(q/Wide character in write()/);
+    }
 
     my $len = length $buf;
     my $off = 0;
@@ -497,8 +504,10 @@ sub write_content_body {
         defined $data && length $data
           or last;
 
-        utf8::downgrade($data, 1)
-          or croak(q/Wide character in write_content()/);
+        if ( $] ge '5.008' ) {
+            utf8::downgrade($data, 1)
+                or croak(q/Wide character in write_content()/);
+        }
 
         $len += $self->write($data);
     }
@@ -543,8 +552,10 @@ sub write_chunked_body {
         defined $data && length $data
           or last;
 
-        utf8::downgrade($data, 1)
-          or croak(q/Wide character in write_chunked_body()/);
+        if ( $] ge '5.008' ) {
+            utf8::downgrade($data, 1)
+                or croak(q/Wide character in write_chunked_body()/);
+        }
 
         $len += length $data;
 
@@ -645,7 +656,7 @@ HTTP::Tiny - A tiny HTTP client
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 
@@ -674,14 +685,143 @@ also correctly resumes after EINTR.
 
 Additional documentation and improved tests will be forthcoming.
 
+=head1 METHODS
+
+=head2 new
+
+    $http = HTTP::Tiny->new( %attributes );
+
+This constructor returns a new HTTP::Tiny object.  Valid attributes include:
+
+=over 4
+
+=item *
+
+agent
+
+A user-agent string (defaults to 'HTTP::Tiny/$VERSION')
+
+=item *
+
+default_headers
+
+A hashref of default headers to apply to requests
+
+=item *
+
+max_redirect
+
+Maximum number of redirects allowed (defaults to 5)
+
+=item *
+
+max_size
+
+Maximum response size (only when not using a data callback)
+
+=item *
+
+proxy
+
+URL of a proxy server to use
+
+=item *
+
+timeout
+
+Request timeout in seconds (default is 60)
+
+=back
+
+=head2 get
+
+    $response = $http->get($url);
+    $response = $http->get($url, \%options);
+
+Executes a C<GET> request for the given URL.  Internally, it just calls
+C<request()> with 'GET' as the method.  See C<request()> for valid options
+and a description of the response.
+
+=head2 request
+
+    $response = $http->request($method, $url);
+    $response = $http->request($method, $url, \%options);
+
+Executes an HTTP request of the given method type ('GET',
+'HEAD', 'PUT', etc.) on the given URL.  A hashref of options
+may be appended to modify the request.
+
+Valid options are:
+
+=over 4
+
+=item *
+
+headers
+
+A hashref containing headers to include with the request
+
+=item *
+
+content
+
+A scalar to include as the body of the request OR a code reference
+that will be called iteratively to produce the body of the response
+
+=item *
+
+data_callback
+
+A code reference that will be called with chunks of the response
+body
+
+=back
+
+[XXX describe how callbacks work]
+
+The C<response> method returns a hashref containing the response.  The hashref
+will have the following keys:
+
+=over 4
+
+=item *
+
+status
+
+The HTTP status code of the response
+
+=item *
+
+reason
+
+The response phrase returned by the server
+
+=item *
+
+content
+
+The body of the response.  If the response does not have any content
+or if a data callback is provided to consume the response body,
+this will be the empty string
+
+=item *
+
+headers
+
+A hashref of header fields.  All header field names will be normalized 
+to be lower case. If a header is repeated, the value will be an arrayref;
+it will otherwise be a scalar string containing the value
+
+=back
+
+On an exception during the execution of the request, the C<status> field will
+contain 599, and the C<content> field will contain the text of the exception.
+
 =for Pod::Coverage agent
 default_headers
-get
 max_redirect
 max_size
-new
 proxy
-request
 timeout
 
 =head1 AUTHORS
