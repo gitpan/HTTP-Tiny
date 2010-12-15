@@ -9,7 +9,7 @@
 #
 package HTTP::Tiny;
 BEGIN {
-  $HTTP::Tiny::VERSION = '0.002';
+  $HTTP::Tiny::VERSION = '0.003';
 }
 use strict;
 use warnings;
@@ -52,6 +52,34 @@ sub get {
 }
 
 
+sub mirror {
+    my ($self, $url, $file, $args) = @_;
+    @_ == 3 || (@_ == 4 && ref $args eq 'HASH')
+      or Carp::croak(q/Usage: $http->get(URL, FILE, [HASHREF])/);
+    if ( -e $file and my $mtime = (stat($file))[9] ) {
+        $args->{headers}{'if-modified-since'} ||= $self->_http_date($mtime);
+    }
+    my $tempfile = $file . int(rand(2**31));
+    open my $fh, ">", $tempfile
+        or Carp::croak(qq/Error: Could not open temporary file $tempfile for downloading: $!/);
+    $args->{data_callback} = sub { print {$fh} $_[0] };
+    my $response = $self->request('GET', $url, $args);
+    close $fh
+        or Carp::croak(qq/Error: Could not close temporary file $tempfile: $!/);
+    if ( $response->{ok} ) {
+        rename $tempfile, $file
+            or Carp::croak "Error replacing $file with $tempfile: $!\n";
+        my $lm = $response->{headers}{'last-modified'};
+        if ( $lm and my $mtime = $self->_parse_http_date($lm) ) {
+            utime $mtime, $mtime, $file;
+        }
+    }
+    $response->{ok} ||= $response->{status} eq '304';
+    unlink $tempfile;
+    return $response;
+}
+
+
 sub request {
     my ($self, $method, $url, $args) = @_;
     @_ == 3 || (@_ == 4 && ref $args eq 'HASH')
@@ -61,6 +89,7 @@ sub request {
 
     if (my $e = "$@") {
         $response = {
+            ok      => q{},
             status  => 599,
             reason  => 'Internal Exception',
             content => $e,
@@ -123,6 +152,7 @@ sub _request {
     }
 
     $handle->close;
+    $response->{ok} = substr($response->{status},0,1) eq '2';
     return $response;
 }
 
@@ -219,6 +249,27 @@ sub _split_url {
     };
 
     return ($scheme, $host, $port, $path_query);
+}
+
+sub _http_date {
+    my ($self, $time) = @_;
+    my $datetime = gmtime($time);
+    $datetime =~ s{(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)}{$1, $3 $2 $5 $4 GMT};
+    return $datetime;
+}
+
+# Adapted from HTTP::Date for strictly conforming date strings
+my $MoY = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec";
+sub _parse_http_date {
+    my ($self, $str) = @_;
+    if ($str =~ /^[SMTWF][a-z][a-z], (\d\d) ($MoY) (\d\d\d\d) (\d\d):(\d\d):(\d\d) GMT$/) {
+        require Time::Local;
+        return eval {
+            my $t = Time::Local::timegm($6, $5, $4, $1, (index($MoY,$2)/4), $3);
+            $t < 0 ? undef : $t;
+        };
+    }
+    return;
 }
 
 package
@@ -656,13 +707,15 @@ HTTP::Tiny - A tiny HTTP client
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 
     use HTTP::Tiny;
 
     my $response = HTTP::Tiny->new->get('http://example.com/');
+
+    die "Failed!\n" unless $response->{ok};
 
     print "$response->{status} $response->{reason}\n";
 
@@ -742,6 +795,26 @@ Executes a C<GET> request for the given URL.  Internally, it just calls
 C<request()> with 'GET' as the method.  See C<request()> for valid options
 and a description of the response.
 
+=head2 mirror
+
+    $response = $http->mirror($url, $file, \%options)
+    if ( $response->{ok} ) {
+        print "$file is up to date\n";
+    }
+
+Executes a C<GET> request for the URL and saves the response body to the
+file name provided.  If the file already exists, the request will
+includes an C<If-Modified-Since> header with the modification timestamp
+of the file.  You may specificy a different C<If-Modified-Since> header
+yourself in the C<< $options->{headers} >> hash.
+
+The C<ok> field of the response will be true if the status code is 2XX
+or 304 (unmodified).
+
+If the file was modified and the server response includes a properly
+formatted C<Last-Modified> header, the file modification time will
+be updated accordingly.
+
 =head2 request
 
     $response = $http->request($method, $url);
@@ -783,6 +856,12 @@ The C<response> method returns a hashref containing the response.  The hashref
 will have the following keys:
 
 =over 4
+
+=item *
+
+ok
+
+Boolean indicating whether the operation returned a 2XX status code
 
 =item *
 

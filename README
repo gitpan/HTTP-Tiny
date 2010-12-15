@@ -2,12 +2,14 @@ NAME
     HTTP::Tiny - A tiny HTTP client
 
 VERSION
-    version 0.002
+    version 0.003
 
 SYNOPSIS
         use HTTP::Tiny;
 
         my $response = HTTP::Tiny->new->get('http://example.com/');
+
+        die "Failed!\n" unless $response->{ok};
 
         print "$response->{status} $response->{reason}\n";
 
@@ -69,6 +71,25 @@ METHODS
     "request()" with 'GET' as the method. See "request()" for valid options
     and a description of the response.
 
+  mirror
+        $response = $http->mirror($url, $file, \%options)
+        if ( $response->{ok} ) {
+            print "$file is up to date\n";
+        }
+
+    Executes a "GET" request for the URL and saves the response body to the
+    file name provided. If the file already exists, the request will
+    includes an "If-Modified-Since" header with the modification timestamp
+    of the file. You may specificy a different "If-Modified-Since" header
+    yourself in the "$options->{headers}" hash.
+
+    The "ok" field of the response will be true if the status code is 2XX or
+    304 (unmodified).
+
+    If the file was modified and the server response includes a properly
+    formatted "Last-Modified" header, the file modification time will be
+    updated accordingly.
+
   request
         $response = $http->request($method, $url);
         $response = $http->request($method, $url, \%options);
@@ -97,6 +118,10 @@ METHODS
 
     The "response" method returns a hashref containing the response. The
     hashref will have the following keys:
+
+    *   ok
+
+        Boolean indicating whether the operation returned a 2XX status code
 
     *   status
 

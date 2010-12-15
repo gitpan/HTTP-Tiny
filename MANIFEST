@@ -7,6 +7,7 @@ Makefile.PL
 README
 dist.ini
 eg/get.pl
+eg/mirror.pl
 lib/HTTP/Tiny.pm
 t/00-compile.t
 t/000_load.t
@@ -16,6 +17,7 @@ t/020_headers.t
 t/030_response.t
 t/040_content.t
 t/050_chunked_body.t
+t/060_http_date.t
 t/Util.pm
 xt/release/distmeta.t
 xt/release/pod-coverage.t

@@ -28,9 +28,10 @@ my %WriteMakefileArgs = (
   'PREREQ_PM' => {
     'Carp' => '0',
     'Errno' => '0',
-    'IO::Socket' => '0'
+    'IO::Socket' => '0',
+    'Time::Local' => '0'
   },
-  'VERSION' => '0.002',
+  'VERSION' => '0.003',
   'test' => {
     'TESTS' => 't/*.t'
   }

@@ -36,6 +36,7 @@
             "Carp" : 0,
             "Errno" : 0,
             "IO::Socket" : 0,
+            "Time::Local" : 0,
             "perl" : "5.006"
          }
       },
@@ -52,11 +53,11 @@
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.002"
+         "version" : "0.003"
       },
       "HTTP::Tiny::Handle" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.002"
+         "version" : "0.003"
       }
    },
    "release_status" : "stable",
@@ -66,6 +67,6 @@
          "url" : "git://ec2.dagolden.com/p5-http-tiny.git"
       }
    },
-   "version" : "0.002"
+   "version" : "0.003"
 }
 
