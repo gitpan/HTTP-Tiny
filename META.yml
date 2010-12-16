@@ -29,10 +29,10 @@ no_index:
 provides:
   HTTP::Tiny:
     file: lib/HTTP/Tiny.pm
-    version: 0.003
+    version: 0.004
   HTTP::Tiny::Handle:
     file: lib/HTTP/Tiny.pm
-    version: 0.003
+    version: 0.004
 requires:
   Carp: 0
   Errno: 0
@@ -41,4 +41,4 @@ requires:
   perl: 5.006
 resources:
   repository: git://ec2.dagolden.com/p5-http-tiny.git
-version: 0.003
+version: 0.004

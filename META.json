@@ -53,11 +53,11 @@
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.003"
+         "version" : "0.004"
       },
       "HTTP::Tiny::Handle" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.003"
+         "version" : "0.004"
       }
    },
    "release_status" : "stable",
@@ -67,6 +67,6 @@
          "url" : "git://ec2.dagolden.com/p5-http-tiny.git"
       }
    },
-   "version" : "0.003"
+   "version" : "0.004"
 }
 

@@ -9,7 +9,7 @@
 #
 package HTTP::Tiny;
 BEGIN {
-  $HTTP::Tiny::VERSION = '0.003';
+  $HTTP::Tiny::VERSION = '0.004';
 }
 use strict;
 use warnings;
@@ -66,7 +66,7 @@ sub mirror {
     my $response = $self->request('GET', $url, $args);
     close $fh
         or Carp::croak(qq/Error: Could not close temporary file $tempfile: $!/);
-    if ( $response->{ok} ) {
+    if ( $response->{success} ) {
         rename $tempfile, $file
             or Carp::croak "Error replacing $file with $tempfile: $!\n";
         my $lm = $response->{headers}{'last-modified'};
@@ -74,7 +74,7 @@ sub mirror {
             utime $mtime, $mtime, $file;
         }
     }
-    $response->{ok} ||= $response->{status} eq '304';
+    $response->{success} ||= $response->{status} eq '304';
     unlink $tempfile;
     return $response;
 }
@@ -89,7 +89,7 @@ sub request {
 
     if (my $e = "$@") {
         $response = {
-            ok      => q{},
+            success => q{},
             status  => 599,
             reason  => 'Internal Exception',
             content => $e,
@@ -152,7 +152,7 @@ sub _request {
     }
 
     $handle->close;
-    $response->{ok} = substr($response->{status},0,1) eq '2';
+    $response->{success} = substr($response->{status},0,1) eq '2';
     return $response;
 }
 
@@ -251,25 +251,35 @@ sub _split_url {
     return ($scheme, $host, $port, $path_query);
 }
 
+# Date conversions adapted from HTTP::Date
+my $DoW = "Sun|Mon|Tue|Wed|Thu|Fri|Sat";
+my $MoY = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec";
 sub _http_date {
-    my ($self, $time) = @_;
-    my $datetime = gmtime($time);
-    $datetime =~ s{(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)}{$1, $3 $2 $5 $4 GMT};
-    return $datetime;
+    my ($sec, $min, $hour, $mday, $mon, $year, $wday) = gmtime($_[1]);
+    return sprintf("%s, %02d %s %04d %02d:%02d:%02d GMT",
+        substr($DoW,$wday*4,3),
+        $mday, substr($MoY,$mon*4,3), $year+1900,
+        $hour, $min, $sec
+    );
 }
 
-# Adapted from HTTP::Date for strictly conforming date strings
-my $MoY = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec";
 sub _parse_http_date {
     my ($self, $str) = @_;
-    if ($str =~ /^[SMTWF][a-z][a-z], (\d\d) ($MoY) (\d\d\d\d) (\d\d):(\d\d):(\d\d) GMT$/) {
-        require Time::Local;
-        return eval {
-            my $t = Time::Local::timegm($6, $5, $4, $1, (index($MoY,$2)/4), $3);
-            $t < 0 ? undef : $t;
-        };
+    require Time::Local;
+    my @tl_parts;
+    if ($str =~ /^[SMTWF][a-z]+, +(\d{1,2}) ($MoY) +(\d\d\d\d) +(\d\d):(\d\d):(\d\d) +GMT$/) {
+        @tl_parts = ($6, $5, $4, $1, (index($MoY,$2)/4), $3);
     }
-    return;
+    elsif ($str =~ /^[SMTWF][a-z]+, +(\d\d)-($MoY)-(\d{2,4}) +(\d\d):(\d\d):(\d\d) +GMT$/ ) {
+        @tl_parts = ($6, $5, $4, $1, (index($MoY,$2)/4), $3);
+    }
+    elsif ($str =~ /^[SMTWF][a-z]+ +($MoY) +(\d{1,2}) +(\d\d):(\d\d):(\d\d) +(?:[^0-9]+ +)?(\d\d\d\d)$/ ) {
+        @tl_parts = ($5, $4, $3, $2, (index($MoY,$1)/4), $6);
+    }
+    return eval {
+        my $t = @tl_parts ? Time::Local::timegm(@tl_parts) : -1;
+        $t < 0 ? undef : $t;
+    };
 }
 
 package
@@ -707,7 +717,7 @@ HTTP::Tiny - A tiny HTTP client
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 SYNOPSIS
 
@@ -715,7 +725,7 @@ version 0.003
 
     my $response = HTTP::Tiny->new->get('http://example.com/');
 
-    die "Failed!\n" unless $response->{ok};
+    die "Failed!\n" unless $response->{success};
 
     print "$response->{status} $response->{reason}\n";
 
@@ -798,7 +808,7 @@ and a description of the response.
 =head2 mirror
 
     $response = $http->mirror($url, $file, \%options)
-    if ( $response->{ok} ) {
+    if ( $response->{success} ) {
         print "$file is up to date\n";
     }
 
@@ -808,7 +818,7 @@ includes an C<If-Modified-Since> header with the modification timestamp
 of the file.  You may specificy a different C<If-Modified-Since> header
 yourself in the C<< $options->{headers} >> hash.
 
-The C<ok> field of the response will be true if the status code is 2XX
+The C<success> field of the response will be true if the status code is 2XX
 or 304 (unmodified).
 
 If the file was modified and the server response includes a properly
@@ -850,7 +860,13 @@ body
 
 =back
 
-[XXX describe how callbacks work]
+If the C<content> option is a code reference, it will be called iteratively
+to provide the content body of the request.  It should return the empty
+string or undef when the iterator is exhausted.
+
+If the C<data_callback> option is provided, it will be called iteratively
+with a chunk of response body data as the sole argument until the entire
+response body is received.
 
 The C<response> method returns a hashref containing the response.  The hashref
 will have the following keys:
@@ -859,7 +875,7 @@ will have the following keys:
 
 =item *
 
-ok
+success
 
 Boolean indicating whether the operation returned a 2XX status code
 
