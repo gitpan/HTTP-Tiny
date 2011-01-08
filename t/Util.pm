@@ -1,7 +1,7 @@
 #
 # This file is part of HTTP-Tiny
 #
-# This software is copyright (c) 2010 by Christian Hansen.
+# This software is copyright (c) 2011 by Christian Hansen.
 #
 # This is free software; you can redistribute it and/or modify it under
 # the same terms as the Perl 5 programming language system itself.
@@ -12,12 +12,19 @@ use strict;
 use warnings;
 
 use IO::File q[SEEK_SET];
+use IO::Dir;
 
 BEGIN {
     our @EXPORT_OK = qw(
         rewind
         tmpfile
+        dir_list
         slurp
+        parse_case
+        hashify
+        sort_headers
+        connect_args
+        clear_socket_source
         set_socket_source
         monkey_patch
         $CRLF
@@ -28,11 +35,8 @@ BEGIN {
     *import = \&Exporter::import;
 }
 
-{
-    no warnings 'once';
-    *CRLF = \"\x0D\x0A";
-    *LF   = \"\x0A";
-}
+our $CRLF = "\x0D\x0A";
+our $LF   = "\x0A";
 
 sub rewind(*) {
     seek($_[0], 0, SEEK_SET)
@@ -57,6 +61,14 @@ sub tmpfile {
     return $fh;
 }
 
+sub dir_list {
+    my ($dir, $filter) = @_;
+    $filter ||= qr/./;
+    my $d = IO::Dir->new($dir)
+        or return;
+    return map { "$dir/$_" } sort grep { /$filter/ } grep { /^[^.]/ } $d->read;
+}
+
 sub slurp (*) {
     my ($fh) = @_;
 
@@ -75,12 +87,62 @@ sub slurp (*) {
     return $buf;
 }
 
+sub parse_case {
+    my ($case) = @_;
+    my %args;
+    my $key = '';
+    for my $line ( split "\n", $case ) {
+        chomp $line;
+        if ( substr($line,0,1) eq q{ } ) {
+            $line =~ s/^\s+//;
+            push @{$args{$key}}, $line;
+        }
+        else {
+            $key = $line;
+        }
+    }
+    return \%args;
+}
+
+sub hashify {
+    my ($lines) = @_;
+    return unless $lines;
+    my %hash;
+    for my $line ( @$lines ) {
+        my ($k,$v) = ($line =~ m{^([^:]+): (.*)$}g);
+        $hash{$k} = $v;
+    }
+    return %hash;
+}
+
+sub sort_headers {
+    my ($text) = shift;
+    my @lines = split /$CRLF/, $text;
+    my $request = shift(@lines) || '';
+    my @headers;
+    while (my $line = shift @lines) {
+        last unless length $line;
+        push @headers, $line;
+    }
+    @headers = sort @headers;
+    return join($CRLF, $request, @headers, '', @lines);
+}
+
 {
-    my ($req_fh, $res_fh);
+    my (@req_fh, @res_fh, $monkey_host, $monkey_port);
+
+    sub clear_socket_source {
+        @req_fh = ();
+        @res_fh = ();
+    }
 
     sub set_socket_source {
-        ($req_fh, $res_fh) = @_;
+        my ($req_fh, $res_fh) = @_;
+        push @req_fh, $req_fh;
+        push @res_fh, $res_fh;
     }
+
+    sub connect_args { return ($monkey_host, $monkey_port) }
 
     sub monkey_patch {
         no warnings qw/redefine once/;
@@ -88,17 +150,18 @@ sub slurp (*) {
         *HTTP::Tiny::Handle::can_write = sub {1};
         *HTTP::Tiny::Handle::connect = sub {
             my ($self, $scheme, $host, $port) = @_;
-            $self->{host} = $host;
-            $self->{port} = $port;
-            $self->{fh} = $req_fh;
+            $self->{host} = $monkey_host = $host;
+            $self->{port} = $monkey_port = $port;
+            $self->{fh} = shift @req_fh;
             return $self;
         };
-        my $original_write_request = \&HTTP::TIny::Handle::write_request;
-        *HTTP::TIny::Handle::write_request = sub {
+        my $original_write_request = \&HTTP::Tiny::Handle::write_request;
+        *HTTP::Tiny::Handle::write_request = sub {
             my ($self, $request) = @_;
             $original_write_request->($self, $request);
-            $self->{fh} = $res_fh;
-        }
+            $self->{fh} = shift @res_fh;
+        };
+        *HTTP::Tiny::Handle::close = sub { 1 }; # don't close our temps
     }
 }
 

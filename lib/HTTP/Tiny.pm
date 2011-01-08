@@ -2,14 +2,14 @@
 #
 # This file is part of HTTP-Tiny
 #
-# This software is copyright (c) 2010 by Christian Hansen.
+# This software is copyright (c) 2011 by Christian Hansen.
 #
 # This is free software; you can redistribute it and/or modify it under
 # the same terms as the Perl 5 programming language system itself.
 #
 package HTTP::Tiny;
 BEGIN {
-  $HTTP::Tiny::VERSION = '0.004';
+  $HTTP::Tiny::VERSION = '0.005';
 }
 use strict;
 use warnings;
@@ -23,7 +23,7 @@ BEGIN {
     @attributes = qw(agent default_headers max_redirect max_size proxy timeout);
     no strict 'refs';
     for my $accessor ( @attributes ) {
-        *{$accessor} = sub { 
+        *{$accessor} = sub {
             @_ > 1 ? $_[0]->{$accessor} = $_[1] : $_[0]->{$accessor};
         };
     }
@@ -33,7 +33,7 @@ sub new {
     my($class, %args) = @_;
     (my $agent = $class) =~ s{::}{-}g;
     my $self = {
-        agent        => $agent . "/" . $class->VERSION,
+        agent        => $agent . "/" . ($class->VERSION || 0),
         max_redirect => 5,
         timeout      => 60,
     };
@@ -55,7 +55,7 @@ sub get {
 sub mirror {
     my ($self, $url, $file, $args) = @_;
     @_ == 3 || (@_ == 4 && ref $args eq 'HASH')
-      or Carp::croak(q/Usage: $http->get(URL, FILE, [HASHREF])/);
+      or Carp::croak(q/Usage: $http->mirror(URL, FILE, [HASHREF])/);
     if ( -e $file and my $mtime = (stat($file))[9] ) {
         $args->{headers}{'if-modified-since'} ||= $self->_http_date($mtime);
     }
@@ -117,7 +117,7 @@ sub _request {
         scheme    => $scheme,
         host_port => ($port == $DefaultPort{$scheme} ? $host : "$host:$port"),
         uri       => $path_query,
-        headers     => {},
+        headers   => {},
     };
 
     my $handle  = HTTP::Tiny::Handle->new(timeout => $self->{timeout});
@@ -148,7 +148,8 @@ sub _request {
     }
     else {
         my $data_cb = $self->_prepare_data_cb($response, $args);
-        $handle->read_body($data_cb, $response->{headers}{'content-length'});
+        my $rh = $response->{headers};
+        $handle->read_body($data_cb, $rh);
     }
 
     $handle->close;
@@ -220,9 +221,9 @@ sub _maybe_redirect {
     my ($self, $request, $response, $args) = @_;
     my $headers = $response->{headers};
     if (   $response->{status} =~ /^30[12]/
-        && $request->{method} =~ /^GET|HEAD$/
-        && $headers->{location}
-        && $args->{redirects}++ < $self->{max_redirect}
+        and $request->{method} =~ /^GET|HEAD$/
+        and $headers->{location}
+        and ++$args->{redirects} <= $self->{max_redirect}
     ) {
         return ($headers->{location} =~ /^\//)
             ? "$request->{scheme}://$request->{host_port}$headers->{location}"
@@ -519,12 +520,14 @@ sub write_header_lines {
 
 sub read_body {
     @_ == 2 || @_ == 3 || croak(q/Usage: $handle->read_body(callback [, content_length])/);
-    my ($self, $cb, $content_length) = @_;
-    if ($content_length) {
-        $self->read_content_body($cb, $content_length);
+    my ($self, $cb, $headers) = @_;
+    if ( defined ($headers->{'transfer-encoding'})
+        && $headers->{'transfer-encoding'} =~ /chunked/
+    ) {
+        $self->read_chunked_body($cb);
     }
     else {
-        $self->read_chunked_body($cb);
+        $self->read_content_body($cb, $headers->{'content-length'});
     }
     return;
 }
@@ -544,11 +547,17 @@ sub read_content_body {
     @_ == 3 || croak(q/Usage: $handle->read_content_body(callback, content_length)/);
     my ($self, $cb, $content_length) = @_;
 
-    my $len = $content_length;
-    while ($len > 0) {
-        my $read = ($len > BUFSIZE) ? BUFSIZE : $len;
-        $cb->($self->read($read));
-        $len -= $read;
+    if ( $content_length ) {
+        my $len = $content_length;
+        while ($len > 0) {
+            my $read = ($len > BUFSIZE) ? BUFSIZE : $len;
+            $cb->($self->read($read));
+            $len -= $read;
+        }
+    }
+    else {
+        my $chunk;
+        $cb->($chunk) while length( $chunk = $self->read(BUFSIZE, 1) );
     }
 
     return $content_length; # XXX ignored? -- dagolden, 2010-12-03
@@ -717,7 +726,7 @@ HTTP::Tiny - A tiny HTTP client
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 SYNOPSIS
 
@@ -735,7 +744,7 @@ version 0.004
         }
     }
 
-    print $response->{content} if defined $response->{content};
+    print $response->{content} if length $response->{content};
 
 =head1 DESCRIPTION
 
@@ -745,8 +754,6 @@ requests without the overhead of a large framework like L<LWP::UserAgent>.
 It is more correct and more complete than L<HTTP::Lite>.  It supports
 proxies (currently only non-authenticating ones) and redirection.  It
 also correctly resumes after EINTR.
-
-Additional documentation and improved tests will be forthcoming.
 
 =head1 METHODS
 
@@ -780,7 +787,8 @@ Maximum number of redirects allowed (defaults to 5)
 
 max_size
 
-Maximum response size (only when not using a data callback)
+Maximum response size (only when not using a data callback).  If defined,
+responses larger than this will die with an error message
 
 =item *
 
@@ -903,7 +911,7 @@ this will be the empty string
 
 headers
 
-A hashref of header fields.  All header field names will be normalized 
+A hashref of header fields.  All header field names will be normalized
 to be lower case. If a header is repeated, the value will be an arrayref;
 it will otherwise be a scalar string containing the value
 
@@ -935,7 +943,7 @@ David Golden <dagolden@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Christian Hansen.
+This software is copyright (c) 2011 by Christian Hansen.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

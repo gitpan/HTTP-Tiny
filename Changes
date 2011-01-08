@@ -1,5 +1,13 @@
 Release notes for HTTP-Tiny
 
+0.005     2011-01-08 06:32:05 EST5EDT
+
+  - Fixed bug getting content for servers which do not sent Content-Length
+
+  - Add test coverage for get(), mirror() and request()
+
+  - Add test coverage for requests with static and generated content
+
 0.004     2010-12-15 22:53:59 EST5EDT
 
   - Renamed 'ok' response field to 'success'

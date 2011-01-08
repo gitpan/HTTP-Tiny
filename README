@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A tiny HTTP client
 
 VERSION
-    version 0.004
+    version 0.005
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -19,7 +19,7 @@ SYNOPSIS
             }
         }
 
-        print $response->{content} if defined $response->{content};
+        print $response->{content} if length $response->{content};
 
 DESCRIPTION
     This is a very simple HTTP/1.1 client, designed primarily for doing
@@ -29,8 +29,6 @@ DESCRIPTION
     It is more correct and more complete than HTTP::Lite. It supports
     proxies (currently only non-authenticating ones) and redirection. It
     also correctly resumes after EINTR.
-
-    Additional documentation and improved tests will be forthcoming.
 
 METHODS
   new
@@ -53,7 +51,8 @@ METHODS
 
     *   max_size
 
-        Maximum response size (only when not using a data callback)
+        Maximum response size (only when not using a data callback). If
+        defined, responses larger than this will die with an error message
 
     *   proxy
 
@@ -160,7 +159,7 @@ AUTHORS
     *   David Golden <dagolden@cpan.org>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2010 by Christian Hansen.
+    This software is copyright (c) 2011 by Christian Hansen.
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.

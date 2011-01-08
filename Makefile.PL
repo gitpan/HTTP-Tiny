@@ -13,10 +13,13 @@ my %WriteMakefileArgs = (
   'AUTHOR' => 'Christian Hansen <chansen@cpan.org>, David Golden <dagolden@cpan.org>',
   'BUILD_REQUIRES' => {
     'Exporter' => '0',
+    'File::Basename' => '0',
     'File::Find' => '0',
     'File::Temp' => '0',
+    'IO::Dir' => '0',
     'IO::File' => '0',
-    'Test::More' => '0'
+    'IO::Socket::INET' => '0',
+    'Test::More' => '0.88'
   },
   'CONFIGURE_REQUIRES' => {
     'ExtUtils::MakeMaker' => '6.31'
@@ -31,7 +34,7 @@ my %WriteMakefileArgs = (
     'IO::Socket' => '0',
     'Time::Local' => '0'
   },
-  'VERSION' => '0.004',
+  'VERSION' => '0.005',
   'test' => {
     'TESTS' => 't/*.t'
   }
