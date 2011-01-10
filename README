@@ -1,8 +1,8 @@
 NAME
-    HTTP::Tiny - A tiny HTTP client
+    HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.005
+    version 0.006
 
 SYNOPSIS
         use HTTP::Tiny;

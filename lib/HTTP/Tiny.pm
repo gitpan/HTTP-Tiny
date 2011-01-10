@@ -9,11 +9,11 @@
 #
 package HTTP::Tiny;
 BEGIN {
-  $HTTP::Tiny::VERSION = '0.005';
+  $HTTP::Tiny::VERSION = '0.006';
 }
 use strict;
 use warnings;
-# ABSTRACT: A tiny HTTP client
+# ABSTRACT: A small, simple, correct HTTP/1.1 client
 
 use Carp ();
 
@@ -522,7 +522,7 @@ sub read_body {
     @_ == 2 || @_ == 3 || croak(q/Usage: $handle->read_body(callback [, content_length])/);
     my ($self, $cb, $headers) = @_;
     if ( defined ($headers->{'transfer-encoding'})
-        && $headers->{'transfer-encoding'} =~ /chunked/
+        && $headers->{'transfer-encoding'} =~ /chunked/i
     ) {
         $self->read_chunked_body($cb);
     }
@@ -722,11 +722,11 @@ __END__
 
 =head1 NAME
 
-HTTP::Tiny - A tiny HTTP client
+HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 SYNOPSIS
 

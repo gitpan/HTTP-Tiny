@@ -33,6 +33,9 @@ t/cases/get-05.txt
 t/cases/get-06.txt
 t/cases/get-07.txt
 t/cases/get-08.txt
+t/cases/get-09.txt
+t/cases/get-10.txt
+t/cases/get-11.txt
 t/cases/mirror-01.txt
 t/cases/mirror-02.txt
 t/cases/mirror-03.txt

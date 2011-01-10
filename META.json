@@ -1,5 +1,5 @@
 {
-   "abstract" : "A tiny HTTP client",
+   "abstract" : "A small, simple, correct HTTP/1.1 client",
    "author" : [
       "Christian Hansen <chansen@cpan.org>",
       "David Golden <dagolden@cpan.org>"
@@ -56,11 +56,11 @@
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.005"
+         "version" : "0.006"
       },
       "HTTP::Tiny::Handle" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.005"
+         "version" : "0.006"
       }
    },
    "release_status" : "stable",
@@ -72,6 +72,6 @@
          "web" : "http://github.com/dagolden/p5-http-tiny/tree"
       }
    },
-   "version" : "0.005"
+   "version" : "0.006"
 }
 
