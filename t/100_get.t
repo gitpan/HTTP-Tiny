@@ -60,6 +60,7 @@ for my $file ( dir_list("t/cases", qr/^get/ ) ) {
   my ($exp_host, $exp_port) = (
     ($new_args{proxy} || $url ) =~ m{^http://([^:/]+?):?(\d*)/}g
   );
+  $exp_host ||= 'localhost';
   $exp_port ||= 80;
 
   my $got_req = slurp($req_fh);
@@ -80,6 +81,11 @@ for my $file ( dir_list("t/cases", qr/^get/ ) ) {
   }
   else {
     ok( ! $response->{success}, "$label success flag false" );
+  }
+
+  if (defined $case->{expected_headers}) {
+    my %expected = hashify( $case->{expected_headers} );
+    is_deeply($response->{headers}, \%expected, "$label expected headers");
   }
 
   my $check_expected = $case->{expected_like}

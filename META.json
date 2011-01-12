@@ -56,11 +56,11 @@
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.006"
+         "version" : "0.007"
       },
       "HTTP::Tiny::Handle" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.006"
+         "version" : "0.007"
       }
    },
    "release_status" : "stable",
@@ -72,6 +72,6 @@
          "web" : "http://github.com/dagolden/p5-http-tiny/tree"
       }
    },
-   "version" : "0.006"
+   "version" : "0.007"
 }
 

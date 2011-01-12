@@ -9,7 +9,7 @@
 #
 package HTTP::Tiny;
 BEGIN {
-  $HTTP::Tiny::VERSION = '0.006';
+  $HTTP::Tiny::VERSION = '0.007';
 }
 use strict;
 use warnings;
@@ -80,12 +80,21 @@ sub mirror {
 }
 
 
+my %idempotent = map { $_ => 1 } qw/GET HEAD PUT DELETE OPTIONS TRACE/;
+
 sub request {
     my ($self, $method, $url, $args) = @_;
     @_ == 3 || (@_ == 4 && ref $args eq 'HASH')
       or Carp::croak(q/Usage: $http->request(METHOD, URL, [HASHREF])/);
+    $args ||= {}; # we keep some state in this during _request
 
-    my $response = eval { $self->_request($method, $url, $args) };
+    # RFC 2616 Section 8.1.4 mandates a single retry on broken socket
+    my $response;
+    for ( 0 .. 1 ) {
+        $response = eval { $self->_request($method, $url, $args) };
+        last unless $@ && $idempotent{$method}
+            && $@ =~ m{^(?:Socket closed|Unexpected end)};
+    }
 
     if (my $e = "$@") {
         $response = {
@@ -136,11 +145,11 @@ sub _request {
 
     my $response;
     do { $response = $handle->read_response_header }
-        until ($response->{status} ne '100');
+        until (substr($response->{status},0,1) ne '1');
 
-    if ( my $location = $self->_maybe_redirect($request, $response, $args) ) {
+    if ( my @redir_args = $self->_maybe_redirect($request, $response, $args) ) {
         $handle->close;
-        return $self->_request($method, $location, $args);
+        return $self->_request(@redir_args, $args);
     }
 
     if ($method eq 'HEAD' || $response->{status} =~ /^[23]04/) {
@@ -171,6 +180,7 @@ sub _prepare_headers_and_cb {
     $request->{headers}{'user-agent'} ||= $self->{agent};
 
     if (defined $args->{content}) {
+        $request->{headers}{'content-type'} ||= "application/octet-stream";
         if (ref $args->{content} eq 'CODE') {
             $request->{headers}{'transfer-encoding'} = 'chunked'
               unless $request->{headers}{'content-length'}
@@ -220,14 +230,15 @@ sub _prepare_data_cb {
 sub _maybe_redirect {
     my ($self, $request, $response, $args) = @_;
     my $headers = $response->{headers};
-    if (   $response->{status} =~ /^30[12]/
-        and $request->{method} =~ /^GET|HEAD$/
+    my ($status, $method) = ($response->{status}, $request->{method});
+    if (($status eq '303' or ($status =~ /^30[127]/ && $method =~ /^GET|HEAD$/))
         and $headers->{location}
         and ++$args->{redirects} <= $self->{max_redirect}
     ) {
-        return ($headers->{location} =~ /^\//)
+        my $location = ($headers->{location} =~ /^\//)
             ? "$request->{scheme}://$request->{host_port}$headers->{location}"
             : $headers->{location} ;
+        return (($status eq '303' ? 'GET' : $method), $location);
     }
     return;
 }
@@ -235,13 +246,14 @@ sub _maybe_redirect {
 sub _split_url {
     my $url = pop;
 
-    my ($scheme, $authority, $path_query) = $url =~ m<\A([^:/?#]+)://([^/?#]+)([^#]*)>
+    # URI regex adapted from the URI module
+    my ($scheme, $authority, $path_query) = $url =~ m<\A([^:/?#]+)://([^/?#]*)([^#]*)>
       or Carp::croak(qq/Cannot parse URL: '$url'/);
 
     $scheme     = lc $scheme;
     $path_query = "/$path_query" unless $path_query =~ m<\A/>;
 
-    my $host = lc $authority;
+    my $host = (length($authority)) ? lc $authority : 'localhost';
        $host =~ s/\A[^@]*@//;   # userinfo
     my $port = do {
        $host =~ s/:([0-9]*)\z// && length $1
@@ -289,7 +301,7 @@ use strict;
 use warnings;
 
 use Carp       qw[croak];
-use Errno      qw[EINTR];
+use Errno      qw[EINTR EPIPE];
 use IO::Socket qw[SOCK_STREAM];
 
 sub BUFSIZE () { 32768 } # XXX Should be an attribute? -- dagolden, 2010-12-03
@@ -360,6 +372,8 @@ sub write {
     my $len = length $buf;
     my $off = 0;
 
+    local $SIG{PIPE} = 'IGNORE';
+
     while () {
         $self->can_write
           or croak(q/Timed out while waiting for socket to become ready for writing/);
@@ -369,6 +383,9 @@ sub write {
             $off += $r;
             last unless $len > 0;
         }
+        elsif ($! == EPIPE) {
+            croak(qq/Socket closed by remote server: $!/);
+        }
         elsif ($! != EINTR) {
             croak(qq/Could not write to socket: '$!'/);
         }
@@ -377,8 +394,8 @@ sub write {
 }
 
 sub read {
-    @_ == 2 || @_ == 3 || croak(q/Usage: $handle->read(len [, partial])/);
-    my ($self, $len, $partial) = @_;
+    @_ == 2 || @_ == 3 || croak(q/Usage: $handle->read(len [, allow_partial])/);
+    my ($self, $len, $allow_partial) = @_;
 
     my $buf  = '';
     my $got = length $self->{rbuf};
@@ -401,7 +418,7 @@ sub read {
             croak(qq/Could not read from socket: '$!'/);
         }
     }
-    if ($len && !$partial) {
+    if ($len && !$allow_partial) {
         croak(q/Unexpected end of stream/);
     }
     return $buf;
@@ -432,10 +449,9 @@ sub readline {
 }
 
 sub read_header_lines {
-    @_ == 1 || croak(q/Usage: $handle->read_header_lines()/);
-    my ($self) = @_;
-
-    my %headers = ();
+    @_ == 1 || @_ == 2 || croak(q/Usage: $handle->read_header_lines([headers])/);
+    my ($self, $headers) = @_;
+    $headers ||= {};
     my $lines   = 0;
     my $val;
 
@@ -447,15 +463,15 @@ sub read_header_lines {
          }
          elsif ($line =~ /\A ([^\x00-\x1F\x7F:]+) : [\x09\x20]* ([^\x0D\x0A]*)/x) {
              my ($field_name) = lc $1;
-             if (exists $headers{$field_name}) {
-                 for ($headers{$field_name}) {
+             if (exists $headers->{$field_name}) {
+                 for ($headers->{$field_name}) {
                      $_ = [$_] unless ref $_ eq "ARRAY";
                      push @$_, $2;
                      $val = \$_->[-1];
                  }
              }
              else {
-                 $val = \($headers{$field_name} = $2);
+                 $val = \($headers->{$field_name} = $2);
              }
          }
          elsif ($line =~ /\A [\x09\x20]+ ([^\x0D\x0A]*)/x) {
@@ -472,7 +488,7 @@ sub read_header_lines {
             croak(q/Malformed header line: / . $Printable->($line));
          }
     }
-    return \%headers;
+    return $headers;
 }
 
 sub write_request {
@@ -519,12 +535,11 @@ sub write_header_lines {
 }
 
 sub read_body {
-    @_ == 2 || @_ == 3 || croak(q/Usage: $handle->read_body(callback [, content_length])/);
+    @_ == 3 || croak(q/Usage: $handle->read_body(callback, headers)/);
     my ($self, $cb, $headers) = @_;
-    if ( defined ($headers->{'transfer-encoding'})
-        && $headers->{'transfer-encoding'} =~ /chunked/i
-    ) {
-        $self->read_chunked_body($cb);
+    my $te = $headers->{'transfer-encoding'} || '';
+    if ( grep { /chunked/i } ( ref $te eq 'ARRAY' ? @$te : $te ) ) {
+        $self->read_chunked_body($cb, $headers);
     }
     else {
         $self->read_content_body($cb, $headers->{'content-length'});
@@ -551,7 +566,7 @@ sub read_content_body {
         my $len = $content_length;
         while ($len > 0) {
             my $read = ($len > BUFSIZE) ? BUFSIZE : $len;
-            $cb->($self->read($read));
+            $cb->($self->read($read, 0));
             $len -= $read;
         }
     }
@@ -589,8 +604,8 @@ sub write_content_body {
 }
 
 sub read_chunked_body {
-    @_ == 2 || croak(q/Usage: $handle->read_chunked_body(callback)/);
-    my ($self, $cb) = @_;
+    @_ == 3 || croak(q/Usage: $handle->read_chunked_body(callback, $headers)/);
+    my ($self, $cb, $headers) = @_;
 
     while () {
         my $head = $self->readline;
@@ -606,7 +621,8 @@ sub read_chunked_body {
         $self->read(2) eq "\x0D\x0A"
           or croak(q/Malformed chunk: missing CRLF after chunk data/);
     }
-    return $self->read_header_lines; # XXX ignored? -- dagolden, 2010-12-03
+    $self->read_header_lines($headers);
+    return;
 }
 
 sub write_chunked_body {
@@ -647,16 +663,19 @@ sub read_response_header {
 
     my $line = $self->readline;
 
-    $line =~ /\A (HTTP\/1.[0-1]) [\x09\x20]+ ([0-9]{3}) [\x09\x20]+ ([^\x0D\x0A]*) \x0D?\x0A/x
+    $line =~ /\A (HTTP\/(0*\d+\.0*\d+)) [\x09\x20]+ ([0-9]{3}) [\x09\x20]+ ([^\x0D\x0A]*) \x0D?\x0A/x
       or croak(q/Malformed Status-Line: / . $Printable->($line));
 
-    my ($version, $status, $reason) = ($1, $2, $3);
+    my ($protocol, $version, $status, $reason) = ($1, $2, $3, $4);
+
+    croak (qq/Unsupported HTTP protocol: $protocol/)
+        unless $version =~ /0*1\.0*[01]/;
 
     return {
         status   => $status,
         reason   => $reason,
         headers  => $self->read_header_lines,
-        protocol => $version
+        protocol => $protocol,
     };
 }
 
@@ -726,7 +745,7 @@ HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 =head1 VERSION
 
-version 0.006
+version 0.007
 
 =head1 SYNOPSIS
 
@@ -794,7 +813,7 @@ responses larger than this will die with an error message
 
 proxy
 
-URL of a proxy server to use
+URL of a proxy server to use.
 
 =item *
 
@@ -809,9 +828,10 @@ Request timeout in seconds (default is 60)
     $response = $http->get($url);
     $response = $http->get($url, \%options);
 
-Executes a C<GET> request for the given URL.  Internally, it just calls
-C<request()> with 'GET' as the method.  See C<request()> for valid options
-and a description of the response.
+Executes a C<GET> request for the given URL.  The URL must have unsafe
+characters escaped and international domain names encoded.  Internally, it just
+calls C<request()> with 'GET' as the method.  See C<request()> for valid
+options and a description of the response.
 
 =head2 mirror
 
@@ -820,11 +840,12 @@ and a description of the response.
         print "$file is up to date\n";
     }
 
-Executes a C<GET> request for the URL and saves the response body to the
-file name provided.  If the file already exists, the request will
-includes an C<If-Modified-Since> header with the modification timestamp
-of the file.  You may specificy a different C<If-Modified-Since> header
-yourself in the C<< $options->{headers} >> hash.
+Executes a C<GET> request for the URL and saves the response body to the file
+name provided.  The URL must have unsafe characters escaped and international
+domain names encoded.  If the file already exists, the request will includes an
+C<If-Modified-Since> header with the modification timestamp of the file.  You
+may specificy a different C<If-Modified-Since> header yourself in the C<<
+$options->{headers} >> hash.
 
 The C<success> field of the response will be true if the status code is 2XX
 or 304 (unmodified).
@@ -838,9 +859,10 @@ be updated accordingly.
     $response = $http->request($method, $url);
     $response = $http->request($method, $url, \%options);
 
-Executes an HTTP request of the given method type ('GET',
-'HEAD', 'PUT', etc.) on the given URL.  A hashref of options
-may be appended to modify the request.
+Executes an HTTP request of the given method type ('GET', 'HEAD', 'PUT', etc.)
+on the given URL.  The URL must have unsafe characters escaped and
+international domain names encoded.  A hashref of options may be appended to
+modify the request.
 
 Valid options are:
 
@@ -850,7 +872,9 @@ Valid options are:
 
 headers
 
-A hashref containing headers to include with the request
+A hashref containing headers to include with the request.  If the value for
+a header is an array reference, the header will be output multiple times with
+each value in the array.  These headers over-write any default headers.
 
 =item *
 
@@ -926,6 +950,67 @@ max_redirect
 max_size
 proxy
 timeout
+
+=head1 LIMITATIONS
+
+HTTP::Tiny is I<conditionally compliant> with the
+L<HTTP/1.1 specification|http://www.w3.org/Protocols/rfc2616/rfc2616.html>.
+It attempts to meet all "MUST" requirements of the specification, but does not
+implement all "SHOULD" requirements.
+
+Some particular limitations of note include:
+
+=over
+
+=item *
+
+HTTP::Tiny focuses on correct transport.  Users are responsible for ensuring
+that user-defined headers and content are compliant with the HTTP/1.1
+specification.
+
+=item *
+
+Users must ensure that URLs are properly escaped for unsafe characters and that
+international domain names are properly encoded to ASCII. See L<URI::Escape>,
+L<URI::_punycode> and L<Net::IDN::Encode>.
+
+=item *
+
+Redirection is very strict against the specification.  Redirection is only
+automatic for response codes 301, 302 and 307 if the request method is 'GET' or
+'HEAD'.  Response code 303 is always converted into a 'GET' redirection, as
+mandated by the specification.  There is no automatic support for status 305
+("Use proxy") redirections.
+
+=item *
+
+Persistant connections are not supported.  The C<Connection> header will
+always be set to C<close>.
+
+=item *
+
+There is no provision for delaying a request body using an C<Expect> header.
+Unexpected C<1XX> responses are silently ignored as per the specification.
+
+=item *
+
+Only 'chunked' C<Transfer-Encoding> is supported.
+
+=item *
+
+There is no support for a Request-URI of '*' for the 'OPTIONS' request.
+
+=back
+
+=head1 SEE ALSO
+
+=over 4
+
+=item *
+
+L<LWP::UserAgent>
+
+=back
 
 =head1 AUTHORS
 
