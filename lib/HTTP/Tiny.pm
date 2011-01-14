@@ -9,7 +9,7 @@
 #
 package HTTP::Tiny;
 BEGIN {
-  $HTTP::Tiny::VERSION = '0.007';
+  $HTTP::Tiny::VERSION = '0.008';
 }
 use strict;
 use warnings;
@@ -133,7 +133,8 @@ sub _request {
 
     if ($self->{proxy}) {
         $request->{uri} = "$scheme://$request->{host_port}$path_query";
-        # XXX CONNECT for https scheme
+        croak(qq/HTTPS via proxy is not supported/)
+            if $request->{scheme} eq 'https';
         $handle->connect(($self->_split_url($self->{proxy}))[0..2]);
     }
     else {
@@ -157,8 +158,7 @@ sub _request {
     }
     else {
         my $data_cb = $self->_prepare_data_cb($response, $args);
-        my $rh = $response->{headers};
-        $handle->read_body($data_cb, $rh);
+        $handle->read_body($data_cb, $response);
     }
 
     $handle->close;
@@ -198,6 +198,8 @@ sub _prepare_headers_and_cb {
                   || $request->{headers}{'transfer-encoding'};
             $request->{cb} = sub { substr $content, 0, length $content, '' };
         }
+        $request->{trailer_cb} = $args->{trailer_callback}
+            if ref $args->{trailer_callback} eq 'CODE';
     }
     return;
 }
@@ -207,21 +209,16 @@ sub _prepare_data_cb {
     my $data_cb = $args->{data_callback};
     $response->{content} = '';
 
-    # XXX Should max_size apply even if a data callback is provided?
-    # Perhaps it should for consistency. I'm also not clear why
-    # max_size should be ignored on status other than 2XX.  Perhaps
-    # all $data_cb's should be wrapped in a max_size checking
-    # callback if max_size is true -- dagolden, 2010-12-02
     if (!$data_cb || $response->{status} !~ /^2/) {
         if (defined $self->{max_size}) {
             $data_cb = sub {
-                $response->{content} .= $_[0];
-                Carp::croak(qq/Size of response body exceeds the maximum allowed of $self->{max_size}/)
-                  if length $response->{content} > $self->{max_size};
+                $_[1]->{content} .= $_[0];
+                die(qq/Size of response body exceeds the maximum allowed of $self->{max_size}\n/)
+                  if length $_[1]->{content} > $self->{max_size};
             };
         }
         else {
-            $data_cb = sub { $response->{content} .= $_[0] };
+            $data_cb = sub { $_[1]->{content} .= $_[0] };
         }
     }
     return $data_cb;
@@ -304,7 +301,7 @@ use Carp       qw[croak];
 use Errno      qw[EINTR EPIPE];
 use IO::Socket qw[SOCK_STREAM];
 
-sub BUFSIZE () { 32768 } # XXX Should be an attribute? -- dagolden, 2010-12-03
+sub BUFSIZE () { 32768 }
 
 my $Printable = sub {
     local $_ = shift;
@@ -332,11 +329,17 @@ sub connect {
     @_ == 4 || croak(q/Usage: $handle->connect(scheme, host, port)/);
     my ($self, $scheme, $host, $port) = @_;
 
-    # XXX IO::Socket::SSL
-    $scheme eq 'http'
-      or croak(qq/Unsupported URL scheme '$scheme'/);
+    if ( $scheme eq 'https' ) {
+        eval "require IO::Socket::SSL"
+            unless exists $INC{'IO/Socket/SSL.pm'};
+        croak(qq/IO::Socket::SSL must be installed for https support\n/)
+            unless $INC{'IO/Socket/SSL.pm'};
+    }
+    elsif ( $scheme ne 'http' ) {
+      croak(qq/Unsupported URL scheme '$scheme'/);
+    }
 
-    $self->{fh} = IO::Socket::INET->new(
+    $self->{fh} = 'IO::Socket::INET'->new(
         PeerHost  => $host,
         PeerPort  => $port,
         Proto     => 'tcp',
@@ -346,6 +349,13 @@ sub connect {
 
     binmode($self->{fh})
       or croak(qq/Could not binmode() socket: '$!'/);
+
+    if ( $scheme eq 'https') {
+        IO::Socket::SSL->start_SSL($self->{fh});
+        ref($self->{fh}) eq 'IO::Socket::SSL'
+            and $self->{fh}->verify_hostname( $host, 'http' )
+            or croak(qq/SSL connection failed for $host\n/);
+    }
 
     $self->{host} = $host;
     $self->{port} = $port;
@@ -495,8 +505,7 @@ sub write_request {
     @_ == 2 || croak(q/Usage: $handle->write_request(request)/);
     my($self, $request) = @_;
     $self->write_request_header(@{$request}{qw/method uri headers/});
-    $self->write_body($request->{cb}, $request->{headers}{'content-length'})
-        if $request->{cb};
+    $self->write_body($request) if $request->{cb};
     return;
 }
 
@@ -509,7 +518,7 @@ my %HeaderCase = (
 );
 
 sub write_header_lines {
-    @_ == 2 || croak(q/Usage: $handle->write_header_lines(headers)/);
+    (@_ == 2 && ref $_[1] eq 'HASH') || croak(q/Usage: $handle->write_header_lines(headers)/);
     my($self, $headers) = @_;
 
     my $buf = '';
@@ -535,56 +544,57 @@ sub write_header_lines {
 }
 
 sub read_body {
-    @_ == 3 || croak(q/Usage: $handle->read_body(callback, headers)/);
-    my ($self, $cb, $headers) = @_;
-    my $te = $headers->{'transfer-encoding'} || '';
+    @_ == 3 || croak(q/Usage: $handle->read_body(callback, response)/);
+    my ($self, $cb, $response) = @_;
+    my $te = $response->{headers}{'transfer-encoding'} || '';
     if ( grep { /chunked/i } ( ref $te eq 'ARRAY' ? @$te : $te ) ) {
-        $self->read_chunked_body($cb, $headers);
+        $self->read_chunked_body($cb, $response);
     }
     else {
-        $self->read_content_body($cb, $headers->{'content-length'});
+        $self->read_content_body($cb, $response);
     }
     return;
 }
 
 sub write_body {
-    @_ == 2 || @_ == 3 || croak(q/Usage: $handle->write_body(callback [, content_length])/);
-    my ($self, $cb, $content_length) = @_;
-    if ($content_length) {
-        return $self->write_content_body($cb, $content_length);
+    @_ == 2 || croak(q/Usage: $handle->write_body(request)/);
+    my ($self, $request) = @_;
+    if ($request->{headers}{'content-length'}) {
+        return $self->write_content_body($request);
     }
     else {
-        return $self->write_chunked_body($cb);
+        return $self->write_chunked_body($request);
     }
 }
 
 sub read_content_body {
-    @_ == 3 || croak(q/Usage: $handle->read_content_body(callback, content_length)/);
-    my ($self, $cb, $content_length) = @_;
+    @_ == 3 || @_ == 4 || croak(q/Usage: $handle->read_content_body(callback, response, [read_length])/);
+    my ($self, $cb, $response, $content_length) = @_;
+    $content_length ||= $response->{headers}{'content-length'};
 
     if ( $content_length ) {
         my $len = $content_length;
         while ($len > 0) {
             my $read = ($len > BUFSIZE) ? BUFSIZE : $len;
-            $cb->($self->read($read, 0));
+            $cb->($self->read($read, 0), $response);
             $len -= $read;
         }
     }
     else {
         my $chunk;
-        $cb->($chunk) while length( $chunk = $self->read(BUFSIZE, 1) );
+        $cb->($chunk, $response) while length( $chunk = $self->read(BUFSIZE, 1) );
     }
 
-    return $content_length; # XXX ignored? -- dagolden, 2010-12-03
+    return;
 }
 
 sub write_content_body {
-    @_ == 3 || croak(q/Usage: $handle->write_content_body(callback, content_length)/);
-    my ($self, $cb, $content_length) = @_;
+    @_ == 2 || croak(q/Usage: $handle->write_content_body(request)/);
+    my ($self, $request) = @_;
 
-    my $len = 0;
+    my ($len, $content_length) = (0, $request->{headers}{'content-length'});
     while () {
-        my $data = $cb->();
+        my $data = $request->{cb}->();
 
         defined $data && length $data
           or last;
@@ -604,8 +614,8 @@ sub write_content_body {
 }
 
 sub read_chunked_body {
-    @_ == 3 || croak(q/Usage: $handle->read_chunked_body(callback, $headers)/);
-    my ($self, $cb, $headers) = @_;
+    @_ == 3 || croak(q/Usage: $handle->read_chunked_body(callback, $response)/);
+    my ($self, $cb, $response) = @_;
 
     while () {
         my $head = $self->readline;
@@ -616,24 +626,22 @@ sub read_chunked_body {
         my $len = hex($1)
           or last;
 
-        $self->read_content_body($cb, $len);
+        $self->read_content_body($cb, $response, $len);
 
         $self->read(2) eq "\x0D\x0A"
           or croak(q/Malformed chunk: missing CRLF after chunk data/);
     }
-    $self->read_header_lines($headers);
+    $self->read_header_lines($response->{headers});
     return;
 }
 
 sub write_chunked_body {
-    @_ == 2 || @_ == 3 || croak(q/Usage: $handle->write_chunked_body(callback [, trailers])/);
-    my ($self, $cb, $trailers) = @_;
-
-    $trailers ||= {}; # XXX not used; remove? -- dagolden, 2010-12-03
+    @_ == 2 || croak(q/Usage: $handle->write_chunked_body(request)/);
+    my ($self, $request) = @_;
 
     my $len = 0;
     while () {
-        my $data = $cb->();
+        my $data = $request->{cb}->();
 
         defined $data && length $data
           or last;
@@ -653,7 +661,8 @@ sub write_chunked_body {
         $self->write($chunk);
     }
     $self->write("0\x0D\x0A");
-    $self->write_header_lines($trailers); # XXX remove? -- dagolden, 2010-12-03
+    $self->write_header_lines($request->{trailer_cb}->())
+        if ref $request->{trailer_cb} eq 'CODE';
     return $len;
 }
 
@@ -680,12 +689,10 @@ sub read_response_header {
 }
 
 sub write_request_header {
-    @_ == 4 || @_ == 5 || croak(q/Usage: $handle->write_request_header(method, request_uri, headers [, protocol])/);
-    my ($self, $method, $request_uri, $headers, $protocol) = @_;
+    @_ == 4 || croak(q/Usage: $handle->write_request_header(method, request_uri, headers)/);
+    my ($self, $method, $request_uri, $headers) = @_;
 
-    $protocol ||= 'HTTP/1.1'; # XXX never provided -- dagolden, 2010-12-03
-
-    return $self->write("$method $request_uri $protocol\x0D\x0A")
+    return $self->write("$method $request_uri HTTP/1.1\x0D\x0A")
          + $self->write_header_lines($headers);
 }
 
@@ -745,7 +752,7 @@ HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 =head1 VERSION
 
-version 0.007
+version 0.008
 
 =head1 SYNOPSIS
 
@@ -885,10 +892,17 @@ that will be called iteratively to produce the body of the response
 
 =item *
 
+trailer_callback
+
+A code reference that will be called if it exists to provide a hashref
+of trailing headers (only used with chunked transfer-encoding)
+
+=item *
+
 data_callback
 
-A code reference that will be called with chunks of the response
-body
+A code reference that will be called for each chunks of the response
+body received.
 
 =back
 
@@ -896,11 +910,14 @@ If the C<content> option is a code reference, it will be called iteratively
 to provide the content body of the request.  It should return the empty
 string or undef when the iterator is exhausted.
 
-If the C<data_callback> option is provided, it will be called iteratively
-with a chunk of response body data as the sole argument until the entire
-response body is received.
+If the C<data_callback> option is provided, it will be called iteratively until
+the entire response body is received.  The first argument will be a string
+containing a chunk of the response body, the second argument will be the
+in-progress response hash reference, as described below.  (This allows
+customizing the action of the callback based on the C<status> or C<headers>
+received prior to the content body.)
 
-The C<response> method returns a hashref containing the response.  The hashref
+The C<request> method returns a hashref containing the response.  The hashref
 will have the following keys:
 
 =over 4
@@ -986,6 +1003,21 @@ mandated by the specification.  There is no automatic support for status 305
 
 Persistant connections are not supported.  The C<Connection> header will
 always be set to C<close>.
+
+=item *
+
+Direct C<https> connections are supported only if L<IO::Socket::SSL> is
+installed.  There is no support for C<https> connections via proxy.
+
+=item *
+
+Cookies are not directly supported.  Users that set a C<Cookie> header
+should also set C<max_redirect> to zero to ensure cookies are not
+inappropriately re-transmitted.
+
+=item *
+
+Proxy environment variables are not supported.
 
 =item *
 

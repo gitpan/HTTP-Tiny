@@ -1,5 +1,18 @@
 Release notes for HTTP-Tiny
 
+0.008     2011-01-14 06:34:55 EST5EDT
+
+  - Added support for direct 'https' connections if IO::Socket::SSL
+    is installed
+
+  - Added support for a callback to provide trailing headers for
+    chunked transfer encoding
+
+  - Data callbacks receive the response hashref as a second argument
+    for greater flexibility
+
+  - Additional limitations documented
+
 0.007     2011-01-12 04:56:16 EST5EDT
 
   - Added support for redirecting 303 and 307 response codes

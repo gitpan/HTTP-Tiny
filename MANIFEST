@@ -8,6 +8,7 @@ README
 dist.ini
 eg/get.pl
 eg/mirror.pl
+eg/post.pl
 lib/HTTP/Tiny.pm
 t/00-compile.t
 t/000_load.t
@@ -55,6 +56,7 @@ t/cases/put-01.txt
 t/cases/put-02.txt
 t/cases/put-03.txt
 t/cases/put-04.txt
+t/cases/put-05.txt
 t/cases/redirect-01.txt
 t/cases/redirect-02.txt
 t/cases/redirect-03.txt

@@ -12,6 +12,7 @@ my %WriteMakefileArgs = (
   'ABSTRACT' => 'A small, simple, correct HTTP/1.1 client',
   'AUTHOR' => 'Christian Hansen <chansen@cpan.org>, David Golden <dagolden@cpan.org>',
   'BUILD_REQUIRES' => {
+    'Data::Dumper' => '0',
     'Exporter' => '0',
     'File::Basename' => '0',
     'File::Find' => '0',
@@ -34,7 +35,7 @@ my %WriteMakefileArgs = (
     'IO::Socket' => '0',
     'Time::Local' => '0'
   },
-  'VERSION' => '0.007',
+  'VERSION' => '0.008',
   'test' => {
     'TESTS' => 't/*.t'
   }

@@ -42,6 +42,7 @@
       },
       "test" : {
          "requires" : {
+            "Data::Dumper" : 0,
             "Exporter" : 0,
             "File::Basename" : 0,
             "File::Find" : 0,
@@ -56,11 +57,11 @@
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.007"
+         "version" : "0.008"
       },
       "HTTP::Tiny::Handle" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.007"
+         "version" : "0.008"
       }
    },
    "release_status" : "stable",
@@ -72,6 +73,6 @@
          "web" : "http://github.com/dagolden/p5-http-tiny/tree"
       }
    },
-   "version" : "0.007"
+   "version" : "0.008"
 }
 
