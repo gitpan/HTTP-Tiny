@@ -35,7 +35,7 @@ my %WriteMakefileArgs = (
     'IO::Socket' => '0',
     'Time::Local' => '0'
   },
-  'VERSION' => '0.008',
+  'VERSION' => '0.009',
   'test' => {
     'TESTS' => 't/*.t'
   }
