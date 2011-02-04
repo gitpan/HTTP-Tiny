@@ -16,6 +16,7 @@ my %WriteMakefileArgs = (
     'Exporter' => '0',
     'File::Basename' => '0',
     'File::Find' => '0',
+    'File::Spec' => '0',
     'File::Temp' => '0',
     'IO::Dir' => '0',
     'IO::File' => '0',
@@ -35,7 +36,7 @@ my %WriteMakefileArgs = (
     'IO::Socket' => '0',
     'Time::Local' => '0'
   },
-  'VERSION' => '0.009',
+  'VERSION' => '0.010',
   'test' => {
     'TESTS' => 't/*.t'
   }
