@@ -32,11 +32,10 @@ my %WriteMakefileArgs = (
   'NAME' => 'HTTP::Tiny',
   'PREREQ_PM' => {
     'Carp' => '0',
-    'Errno' => '0',
     'IO::Socket' => '0',
     'Time::Local' => '0'
   },
-  'VERSION' => '0.010',
+  'VERSION' => '0.011',
   'test' => {
     'TESTS' => 't/*.t'
   }
