@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.011
+    version 0.012
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -195,6 +195,8 @@ LIMITATIONS
 
     *   Direct "https" connections are supported only if IO::Socket::SSL is
         installed. There is no support for "https" connections via proxy.
+        Any SSL certificate that matches the host is accepted -- SSL
+        certificates are not verified against certificate authorities.
 
     *   Cookies are not directly supported. Users that set a "Cookie" header
         should also set "max_redirect" to zero to ensure cookies are not

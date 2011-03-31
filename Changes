@@ -1,5 +1,16 @@
 Release notes for HTTP-Tiny
 
+0.012     2011-03-31 15:48:02 America/New_York
+
+  [BUG FIXES]
+
+  - mirror() now uses binmode during output (RT #67118) [Serguei Trouchelle]
+
+  [DOCUMENTATION]
+
+  - noted that SSL certificates are not verified against CA's
+    (RT #66907)
+
 0.011     2011-03-19 20:48:39 America/New_York
 
   [BUG FIXES]
@@ -7,7 +18,7 @@ Release notes for HTTP-Tiny
   - Made t/000_load.t less verbose under harness (RT#65507) [Dave Mitchell]
 
   - Removed 'Errno' as an explicit prefix (it is a core module, but not
-    indexed by PAUSE, which might confuse some installers
+    indexed by PAUSE, which might confuse some installers)
 
 0.010     2011-02-04 02:45:31 EST5EDT
 
