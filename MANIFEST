@@ -5,6 +5,7 @@ META.json
 META.yml
 Makefile.PL
 README
+README.PATCHING
 dist.ini
 eg/get.pl
 eg/mirror.pl
@@ -24,6 +25,7 @@ t/100_get.t
 t/110_mirror.t
 t/120_put.t
 t/130_redirect.t
+t/140_proxy.t
 t/200_live.t
 t/Util.pm
 t/cases/get-01.txt

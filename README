@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.012
+    version 0.013
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -56,7 +56,7 @@ METHODS
 
     *   proxy
 
-        URL of a proxy server to use.
+        URL of a proxy server to use (default is $ENV{http_proxy} if set)
 
     *   timeout
 
@@ -202,7 +202,10 @@ LIMITATIONS
         should also set "max_redirect" to zero to ensure cookies are not
         inappropriately re-transmitted.
 
-    *   Proxy environment variables are not supported.
+    *   Only the "http_proxy" environment variable is supported in the
+        format "http://HOST:PORT/". If a "proxy" argument is passed to "new"
+        (including undef), then the "http_proxy" environment variable is
+        ignored.
 
     *   There is no provision for delaying a request body using an "Expect"
         header. Unexpected "1XX" responses are silently ignored as per the
@@ -227,9 +230,9 @@ SUPPORT
     This is open source software. The code repository is available for
     public review and contribution under the terms of the license.
 
-    <http://github.com/dagolden/p5-http-tiny/tree>
+    <http://github.com/dagolden/p5-http-tiny>
 
-      git clone git://github.com/dagolden/p5-http-tiny.git
+      git clone http://github.com/dagolden/p5-http-tiny
 
 AUTHORS
     *   Christian Hansen <chansen@cpan.org>

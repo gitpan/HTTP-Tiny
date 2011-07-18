@@ -5,7 +5,7 @@
       "David Golden <dagolden@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.200004, CPAN::Meta::Converter version 2.110580",
+   "generated_by" : "Dist::Zilla version 4.200009, CPAN::Meta::Converter version 2.110930",
    "license" : [
       "perl_5"
    ],
@@ -28,7 +28,7 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "6.31"
+            "ExtUtils::MakeMaker" : "6.30"
          }
       },
       "runtime" : {
@@ -57,11 +57,11 @@
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.012"
+         "version" : "0.013"
       },
       "HTTP::Tiny::Handle" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.012"
+         "version" : "0.013"
       }
    },
    "release_status" : "stable",
@@ -70,13 +70,13 @@
          "mailto" : "bug-http-tiny at rt.cpan.org",
          "web" : "http://rt.cpan.org/Public/Dist/Display.html?Name=HTTP-Tiny"
       },
-      "homepage" : "http://github.com/dagolden/p5-http-tiny/tree",
+      "homepage" : "http://github.com/dagolden/p5-http-tiny",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/dagolden/p5-http-tiny.git",
-         "web" : "http://github.com/dagolden/p5-http-tiny/tree"
+         "url" : "http://github.com/dagolden/p5-http-tiny",
+         "web" : "http://github.com/dagolden/p5-http-tiny"
       }
    },
-   "version" : "0.012"
+   "version" : "0.013"
 }
 
