@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.013
+    version 0.014
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -22,9 +22,8 @@ SYNOPSIS
         print $response->{content} if length $response->{content};
 
 DESCRIPTION
-    This is a very simple HTTP/1.1 client, designed primarily for doing
-    simple GET requests without the overhead of a large framework like
-    LWP::UserAgent.
+    This is a very simple HTTP/1.1 client, designed for doing simple GET
+    requests without the overhead of a large framework like LWP::UserAgent.
 
     It is more correct and more complete than HTTP::Lite. It supports
     proxies (currently only non-authenticating ones) and redirection. It
@@ -62,14 +61,29 @@ METHODS
 
         Request timeout in seconds (default is 60)
 
-  get
+  get|head|put|post|delete
         $response = $http->get($url);
         $response = $http->get($url, \%options);
+        $response = $http->head($url);
 
-    Executes a "GET" request for the given URL. The URL must have unsafe
-    characters escaped and international domain names encoded. Internally,
-    it just calls "request()" with 'GET' as the method. See "request()" for
-    valid options and a description of the response.
+    These methods are shorthand for calling "request()" for the given
+    method. The URL must have unsafe characters escaped and international
+    domain names encoded. See "request()" for valid options and a
+    description of the response.
+
+  post_form
+        $response = $http->post_form($url, $form_data);
+        $response = $http->post_form($url, $form_data, \%options);
+
+    This method executes a "POST" request and sends the key/value pairs from
+    a form data hash or array reference to the given URL with a
+    "content-type" of "application/x-www-form-urlencoded". See documentation
+    for the "www_form_urlencode" method for details on the encoding.
+
+    The URL must have unsafe characters escaped and international domain
+    names encoded. See "request()" for valid options and a description of
+    the response. Any "content-type" header or content in the options
+    hashref will be ignored.
 
   mirror
         $response = $http->mirror($url, $file, \%options)
@@ -168,6 +182,17 @@ METHODS
     will contain 599, and the "content" field will contain the text of the
     exception.
 
+  www_form_urlencode
+        $params = $http->www_form_urlencode( $data );
+        $response = $http->get("http://example.com/query?$params");
+
+    This method converts the key/value pairs from a data hash or array
+    reference into a "x-www-form-urlencoded" string. The keys and values
+    from the data reference will be UTF-8 encoded and escaped per RFC 3986.
+    If a value is an array reference, the key will be repeated with each of
+    the values of the array reference. The key/value pairs in the resulting
+    string will be sorted by key and value.
+
 LIMITATIONS
     HTTP::Tiny is *conditionally compliant* with the HTTP/1.1 specification
     <http://www.w3.org/Protocols/rfc2616/rfc2616.html>. It attempts to meet
@@ -230,9 +255,9 @@ SUPPORT
     This is open source software. The code repository is available for
     public review and contribution under the terms of the license.
 
-    <http://github.com/dagolden/p5-http-tiny>
+    <https://github.com/dagolden/p5-http-tiny>
 
-      git clone http://github.com/dagolden/p5-http-tiny
+      git clone https://github.com/dagolden/p5-http-tiny.git
 
 AUTHORS
     *   Christian Hansen <chansen@cpan.org>

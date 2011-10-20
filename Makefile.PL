@@ -9,35 +9,37 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  'ABSTRACT' => 'A small, simple, correct HTTP/1.1 client',
-  'AUTHOR' => 'Christian Hansen <chansen@cpan.org>, David Golden <dagolden@cpan.org>',
-  'BUILD_REQUIRES' => {
-    'Data::Dumper' => '0',
-    'Exporter' => '0',
-    'File::Basename' => '0',
-    'File::Find' => '0',
-    'File::Spec' => '0',
-    'File::Temp' => '0',
-    'IO::Dir' => '0',
-    'IO::File' => '0',
-    'IO::Socket::INET' => '0',
-    'Test::More' => '0.88'
+  "ABSTRACT" => "A small, simple, correct HTTP/1.1 client",
+  "AUTHOR" => "Christian Hansen <chansen\@cpan.org>, David Golden <dagolden\@cpan.org>",
+  "BUILD_REQUIRES" => {
+    "Data::Dumper" => 0,
+    "Exporter" => 0,
+    "File::Basename" => 0,
+    "File::Find" => 0,
+    "File::Spec" => 0,
+    "File::Temp" => 0,
+    "IO::Dir" => 0,
+    "IO::File" => 0,
+    "IO::Socket::INET" => 0,
+    "Test::More" => "0.88"
   },
-  'CONFIGURE_REQUIRES' => {
-    'ExtUtils::MakeMaker' => '6.30'
+  "CONFIGURE_REQUIRES" => {
+    "ExtUtils::MakeMaker" => "6.30"
   },
-  'DISTNAME' => 'HTTP-Tiny',
-  'EXE_FILES' => [],
-  'LICENSE' => 'perl',
-  'NAME' => 'HTTP::Tiny',
-  'PREREQ_PM' => {
-    'Carp' => '0',
-    'IO::Socket' => '0',
-    'Time::Local' => '0'
+  "DISTNAME" => "HTTP-Tiny",
+  "EXE_FILES" => [],
+  "LICENSE" => "perl",
+  "NAME" => "HTTP::Tiny",
+  "PREREQ_PM" => {
+    "Carp" => 0,
+    "IO::Socket" => 0,
+    "Time::Local" => 0,
+    "strict" => 0,
+    "warnings" => 0
   },
-  'VERSION' => '0.013',
-  'test' => {
-    'TESTS' => 't/*.t'
+  "VERSION" => "0.014",
+  "test" => {
+    "TESTS" => "t/*.t"
   }
 );
 

@@ -1,5 +1,17 @@
 Release notes for HTTP-Tiny
 
+0.014     2011-10-20 13:54:13 America/New_York
+
+  [NEW FEATURES]
+
+  - Adds additional shorthand methods for all common HTTP verbs
+    (HEAD, PUT, POST, DELETE) [David Golden]
+
+  - post_form() method for POST-ing x-www-form-urlencoded data
+    [David Golden]
+
+  - www_form_urlencode() utility method [David Golden]
+
 0.013     2011-07-17 23:14:22 America/New_York
 
   [NEW FEATURES]
