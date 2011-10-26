@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.014
+    version 0.015
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -215,7 +215,7 @@ LIMITATIONS
         into a 'GET' redirection, as mandated by the specification. There is
         no automatic support for status 305 ("Use proxy") redirections.
 
-    *   Persistant connections are not supported. The "Connection" header
+    *   Persistent connections are not supported. The "Connection" header
         will always be set to "close".
 
     *   Direct "https" connections are supported only if IO::Socket::SSL is

@@ -1,5 +1,15 @@
 Release notes for HTTP-Tiny
 
+0.015     2011-10-26 16:42:26 America/New_York
+
+  [BUG FIXES]
+
+  - Make sure PERL_UNICODE doesn't affect PUT test data [Tony Cook]
+
+  [DOCUMENTATION]
+
+  - Fixed typo
+
 0.014     2011-10-20 13:54:13 America/New_York
 
   [NEW FEATURES]
