@@ -35,10 +35,11 @@ my %WriteMakefileArgs = (
     "Carp" => 0,
     "IO::Socket" => 0,
     "Time::Local" => 0,
+    "bytes" => 0,
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.015",
+  "VERSION" => "0.016",
   "test" => {
     "TESTS" => "t/*.t"
   }
