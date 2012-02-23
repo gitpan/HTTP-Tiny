@@ -11,6 +11,7 @@ eg/get.pl
 eg/mirror.pl
 eg/post.pl
 lib/HTTP/Tiny.pm
+perlcritic.rc
 t/00-compile.t
 t/000_load.t
 t/001_api.t
@@ -79,6 +80,8 @@ t/cases/redirect-06.txt
 t/cases/redirect-07.txt
 t/cases/redirect-08.txt
 t/cases/redirect-09.txt
+xt/author/critic.t
+xt/author/pod-spell.t
 xt/release/distmeta.t
 xt/release/pod-coverage.t
 xt/release/pod-syntax.t
