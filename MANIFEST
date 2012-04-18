@@ -32,6 +32,7 @@ t/130_redirect.t
 t/140_proxy.t
 t/150_post_form.t
 t/200_live.t
+t/210_live_ssl.t
 t/Util.pm
 t/cases/delete-01.txt
 t/cases/form-01.txt
