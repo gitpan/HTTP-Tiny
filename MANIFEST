@@ -13,6 +13,7 @@ eg/post.pl
 lib/HTTP/Tiny.pm
 perlcritic.rc
 t/00-compile.t
+t/00-report-prereqs.t
 t/000_load.t
 t/001_api.t
 t/002_croakage.t
