@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.020
+    version 0.021
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -225,7 +225,7 @@ SSL SUPPORT
     Direct "https" connections are supported only if IO::Socket::SSL 1.56 or
     greater is installed. An exception will be thrown if a new enough
     IO::Socket::SSL is not installed or if the SSL encryption fails. There
-    is no support for "https" connections via proxy.
+    is no support for "https" connections via proxy (i.e. RFC 2817).
 
     SSL provides two distinct capabilities:
 
