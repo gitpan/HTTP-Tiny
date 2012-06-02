@@ -1,5 +1,12 @@
 Release notes for HTTP-Tiny
 
+0.022     2012-06-01 23:31:40 America/New_York
+
+  [ADDED]
+
+  - Supports local_address option to set local socket interface
+    [Chris Nehren, David Golden]
+
 0.021     2012-05-15 22:38:57 America/New_York
 
   [TESTING]

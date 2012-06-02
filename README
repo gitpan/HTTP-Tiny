@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.021
+    version 0.022
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -43,6 +43,10 @@ METHODS
     *   "default_headers"
 
         A hashref of default headers to apply to requests
+
+    *   "local_address"
+
+        The local IP address to bind to
 
     *   "max_redirect"
 
@@ -329,6 +333,8 @@ LIMITATIONS
 
     *   There is no support for a Request-URI of '*' for the 'OPTIONS'
         request.
+
+    *   There is no support for IPv6 of any kind.
 
 SEE ALSO
     *   LWP::UserAgent
