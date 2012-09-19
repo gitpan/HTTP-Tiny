@@ -31,8 +31,10 @@ my @modules = qw(
   IO::Socket
   IO::Socket::INET
   IO::Socket::SSL
+  IPC::Cmd
   List::Util
   Mozilla::CA
+  Net::SSLeay
   Test::More
   Time::Local
   bytes

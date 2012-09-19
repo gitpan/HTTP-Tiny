@@ -3,7 +3,7 @@ package HTTP::Tiny;
 use strict;
 use warnings;
 # ABSTRACT: A small, simple, correct HTTP/1.1 client
-our $VERSION = '0.022'; # VERSION
+our $VERSION = '0.023'; # TRIAL VERSION
 
 use Carp ();
 
@@ -878,9 +878,8 @@ sub _ssl_args {
 
 1;
 
-
-
 __END__
+
 =pod
 
 =head1 NAME
@@ -889,7 +888,7 @@ HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 =head1 VERSION
 
-version 0.022
+version 0.023
 
 =head1 SYNOPSIS
 
@@ -1345,7 +1344,7 @@ L<Mozilla::CA>
 =head2 Bugs / Feature Requests
 
 Please report any bugs or feature requests through the issue tracker
-at L<http://rt.cpan.org/Public/Dist/Display.html?Name=HTTP-Tiny>.
+at L<https://rt.cpan.org/Public/Dist/Display.html?Name=HTTP-Tiny>.
 You will be notified automatically of any progress on your issue.
 
 =head2 Source Code
@@ -1353,9 +1352,9 @@ You will be notified automatically of any progress on your issue.
 This is open source software.  The code repository is available for
 public review and contribution under the terms of the license.
 
-L<https://github.com/dagolden/p5-http-tiny>
+L<https://github.com/dagolden/http-tiny>
 
-  git clone https://github.com/dagolden/p5-http-tiny.git
+  git clone git://github.com/dagolden/http-tiny.git
 
 =head1 AUTHORS
 
@@ -1383,4 +1382,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.022
+    version 0.023
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -346,16 +346,16 @@ SEE ALSO
 SUPPORT
   Bugs / Feature Requests
     Please report any bugs or feature requests through the issue tracker at
-    <http://rt.cpan.org/Public/Dist/Display.html?Name=HTTP-Tiny>. You will
+    <https://rt.cpan.org/Public/Dist/Display.html?Name=HTTP-Tiny>. You will
     be notified automatically of any progress on your issue.
 
   Source Code
     This is open source software. The code repository is available for
     public review and contribution under the terms of the license.
 
-    <https://github.com/dagolden/p5-http-tiny>
+    <https://github.com/dagolden/http-tiny>
 
-      git clone https://github.com/dagolden/p5-http-tiny.git
+      git clone git://github.com/dagolden/http-tiny.git
 
 AUTHORS
     *   Christian Hansen <chansen@cpan.org>

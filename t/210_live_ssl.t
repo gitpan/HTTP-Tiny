@@ -6,11 +6,11 @@ use warnings;
 use Test::More 0.88;
 use IO::Socket::INET;
 BEGIN {
-    eval 'use IO::Socket::SSL; 1';
-    plan skip_all => 'IO::Socket::SSL required for SSL tests' if $@;
+    eval { require IO::Socket::SSL; IO::Socket::SSL->VERSION(1.56); 1 };
+    plan skip_all => 'IO::Socket::SSL 1.56 required for SSL tests' if $@;
     # $IO::Socket::SSL::DEBUG = 3;
 
-    eval 'use Mozilla::CA; 1';
+    eval { require Mozilla::CA; 1 };
     plan skip_all => 'Mozilla::CA required for SSL tests' if $@;
 }
 use HTTP::Tiny;
@@ -20,6 +20,12 @@ plan skip_all => 'Only run for $ENV{AUTOMATED_TESTING}'
 
 plan skip_all => "Can't test SSL with http_proxy set"
   if $ENV{http_proxy};
+
+use IPC::Cmd qw/can_run/;
+
+if ( can_run('openssl') ) {
+  diag "\nNote: running test with ", qx/openssl version/;
+}
 
 my $data = {
     'https://www.google.ca/' => {
