@@ -38,15 +38,12 @@ my %WriteMakefileArgs = (
   "PREREQ_PM" => {
     "Carp" => 0,
     "IO::Socket" => 0,
-    "IO::Socket::SSL" => "1.56",
-    "Mozilla::CA" => 0,
-    "Net::SSLeay" => 0,
     "Time::Local" => 0,
     "bytes" => 0,
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.023",
+  "VERSION" => "0.024",
   "test" => {
     "TESTS" => "t/*.t"
   }
