@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.024
+    version 0.025
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -38,7 +38,9 @@ METHODS
 
     *   "agent"
 
-        A user-agent string (defaults to 'HTTP::Tiny/$VERSION')
+        A user-agent string (defaults to 'HTTP-Tiny/$VERSION'). If "agent"
+        ends in a space character, the default user-agent string is
+        appended.
 
     *   "default_headers"
 

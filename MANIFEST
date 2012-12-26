@@ -17,6 +17,7 @@ t/00-report-prereqs.t
 t/000_load.t
 t/001_api.t
 t/002_croakage.t
+t/003_agent.t
 t/010_url.t
 t/020_headers.t
 t/030_response.t

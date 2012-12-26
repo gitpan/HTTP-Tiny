@@ -35,7 +35,11 @@ my @modules = qw(
   List::Util
   Mozilla::CA
   Net::SSLeay
+  Pod::Coverage::TrustPod
+  Test::CPAN::Meta
   Test::More
+  Test::Pod
+  Test::Pod::Coverage
   Time::Local
   bytes
   open

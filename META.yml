@@ -23,7 +23,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300024, CPAN::Meta::Converter version 2.120921'
+generated_by: 'Dist::Zilla version 4.300028, CPAN::Meta::Converter version 2.120921'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -40,7 +40,7 @@ no_index:
 provides:
   HTTP::Tiny:
     file: lib/HTTP/Tiny.pm
-    version: 0.024
+    version: 0.025
 requires:
   Carp: 0
   IO::Socket: 0
@@ -53,4 +53,4 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=HTTP-Tiny
   homepage: https://metacpan.org/release/HTTP-Tiny
   repository: git://github.com/dagolden/http-tiny.git
-version: 0.024
+version: 0.025
