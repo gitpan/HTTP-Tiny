@@ -39,7 +39,7 @@ no_index:
 provides:
   HTTP::Tiny:
     file: lib/HTTP/Tiny.pm
-    version: 0.027
+    version: 0.028
 requires:
   Carp: 0
   IO::Socket: 0
@@ -49,10 +49,10 @@ requires:
   strict: 0
   warnings: 0
 resources:
-  bugtracker: https://github.com/chansen/http-tiny/issues
+  bugtracker: https://github.com/chansen/p5-http-tiny/issues
   homepage: https://metacpan.org/release/HTTP-Tiny
-  repository: git://github.com/chansen/http-tiny.git
-version: 0.027
+  repository: git://github.com/chansen/p5-http-tiny.git
+version: 0.028
 x_contributors:
   - 'Alan Gardner <gardner@pythian.com>'
   - 'Alessandro Ghedini <al3xbio@gmail.com>'
