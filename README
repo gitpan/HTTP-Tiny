@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.025
+    version 0.026
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -41,6 +41,11 @@ METHODS
         A user-agent string (defaults to 'HTTP-Tiny/$VERSION'). If "agent"
         ends in a space character, the default user-agent string is
         appended.
+
+    *   "cookie_jar"
+
+        An instance of HTTP::CookieJar or equivalent class that supports the
+        "add" and "cookie_header" methods
 
     *   "default_headers"
 
@@ -319,9 +324,7 @@ LIMITATIONS
     *   Persistent connections are not supported. The "Connection" header
         will always be set to "close".
 
-    *   Cookies are not directly supported. Users that set a "Cookie" header
-        should also set "max_redirect" to zero to ensure cookies are not
-        inappropriately re-transmitted.
+    *   Cookie support requires HTTP::CookieJar or an equivalent class.
 
     *   Only the "http_proxy" environment variable is supported in the
         format "http://HOST:PORT/". If a "proxy" argument is passed to "new"
@@ -367,10 +370,35 @@ AUTHORS
 
     *   David Golden <dagolden@cpan.org>
 
+CONTRIBUTORS
+    *   Alan Gardner <gardner@pythian.com>
+
     *   Mike Doherty <doherty@cpan.org>
 
+    *   Serguei Trouchelle <stro@cpan.org>
+
+    *   Tony Cook <tony@develop-help.com>
+
+    *   Alessandro Ghedini <al3xbio@gmail.com>
+
+    *   Chris Nehren <apeiron@cpan.org>
+
+    *   Chris Weyl <cweyl@alumni.drew.edu>
+
+    *   Claes Jakobsson <claes@surfar.nu>
+
+    *   Craig Berry <cberry@cpan.org>
+
+    *   David Mitchell <davem@iabyn.com>
+
+    *   Edward Zborowski <ed@rubensteintech.com>
+
+    *   Jess Robinson <castaway@desert-island.me.uk>
+
+    *   Lukas Eklund <leklund@gmail.com>
+
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2012 by Christian Hansen.
+    This software is copyright (c) 2013 by Christian Hansen.
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.

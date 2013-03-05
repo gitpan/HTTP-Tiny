@@ -24,6 +24,7 @@ t/030_response.t
 t/040_content.t
 t/050_chunked_body.t
 t/060_http_date.t
+t/070_cookie_jar.t
 t/100_get.t
 t/101_head.t
 t/102_put.t
@@ -33,10 +34,20 @@ t/110_mirror.t
 t/130_redirect.t
 t/140_proxy.t
 t/150_post_form.t
+t/160_cookies.t
 t/200_live.t
 t/200_live_local_ip.t
 t/210_live_ssl.t
+t/BrokenCookieJar.pm
+t/SimpleCookieJar.pm
 t/Util.pm
+t/cases/cookies-01.txt
+t/cases/cookies-02.txt
+t/cases/cookies-03.txt
+t/cases/cookies-04.txt
+t/cases/cookies-05.txt
+t/cases/cookies-06.txt
+t/cases/cookies-07.txt
 t/cases/delete-01.txt
 t/cases/form-01.txt
 t/cases/form-02.txt
@@ -87,6 +98,7 @@ t/cases/redirect-09.txt
 xt/author/critic.t
 xt/author/pod-spell.t
 xt/release/distmeta.t
+xt/release/minimum-version.t
 xt/release/pod-coverage.t
 xt/release/pod-syntax.t
 xt/release/portability.t
