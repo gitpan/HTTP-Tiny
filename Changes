@@ -1,5 +1,12 @@
 Release notes for HTTP-Tiny
 
+0.030     2013-06-13 11:46:15 America/New_York
+
+  [FIXED]
+
+  - Requests with the empty string as body content no longer generate
+    'content-type' and 'content-length' headers.
+
 0.029     2013-04-17 13:49:07 America/New_York
 
   [FIXED]

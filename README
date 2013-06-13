@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.029
+    version 0.030
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -127,9 +127,9 @@ METHODS
     Executes a "GET" request for the URL and saves the response body to the
     file name provided. The URL must have unsafe characters escaped and
     international domain names encoded. If the file already exists, the
-    request will includes an "If-Modified-Since" header with the
-    modification timestamp of the file. You may specify a different
-    "If-Modified-Since" header yourself in the "$options->{headers}" hash.
+    request will include an "If-Modified-Since" header with the modification
+    timestamp of the file. You may specify a different "If-Modified-Since"
+    header yourself in the "$options->{headers}" hash.
 
     The "success" field of the response will be true if the status code is
     2XX or if the status code is 304 (unmodified).
@@ -175,6 +175,9 @@ METHODS
     If the "content" option is a code reference, it will be called
     iteratively to provide the content body of the request. It should return
     the empty string or undef when the iterator is exhausted.
+
+    If the "content" option is the empty string, no "content-type" or
+    "content-length" headers will be generated.
 
     If the "data_callback" option is provided, it will be called iteratively
     until the entire response body is received. The first argument will be a
@@ -390,6 +393,8 @@ CONTRIBUTORS
     *   Jess Robinson <castaway@desert-island.me.uk>
 
     *   Lukas Eklund <leklund@gmail.com>
+
+    *   Martin-Louis Bright <mlbright@gmail.com>
 
     *   Mike Doherty <doherty@cpan.org>
 
