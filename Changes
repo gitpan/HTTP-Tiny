@@ -1,5 +1,11 @@
 Release notes for HTTP-Tiny
 
+0.031     2013-06-16 23:18:18 America/New_York
+
+  [FIXED]
+
+  - Fixed bug receiving 0-length content bodies
+
 0.030     2013-06-13 11:46:15 America/New_York
 
   [FIXED]
