@@ -27,6 +27,7 @@ Weyl
 Zborowski
 chunked
 iteratively
+proxied
 redirections
 timestamp
 Christian
@@ -61,6 +62,9 @@ Mike
 Doherty
 doherty
 stro
+Syohei
+YOSHIDA
+syohex
 Tony
 Cook
 tony

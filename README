@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.031
+    version 0.032
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -67,6 +67,12 @@ METHODS
     *   "proxy"
 
         URL of a proxy server to use (default is $ENV{http_proxy} if set)
+
+    *   "no_proxy"
+
+        List of domain suffixes that should not be proxied. Must be a
+        comma-separated string or an array reference. (default is
+        $ENV{no_proxy})
 
     *   "timeout"
 
@@ -334,6 +340,11 @@ LIMITATIONS
         (including undef), then the "http_proxy" environment variable is
         ignored.
 
+    *   "no_proxy" environment variable is supported in the format
+        comma-separated list of domain extensions proxy should not be used
+        for. If a "no_proxy" argument is passed to "new", then the
+        "no_proxy" environment variable is ignored.
+
     *   There is no provision for delaying a request body using an "Expect"
         header. Unexpected "1XX" responses are silently ignored as per the
         specification.
@@ -346,13 +357,20 @@ LIMITATIONS
     *   There is no support for IPv6 of any kind.
 
 SEE ALSO
-    *   LWP::UserAgent
+    *   HTTP::Thin - HTTP::Tiny wrapper with HTTP::Request/HTTP::Response
+        compatibility
 
-    *   IO::Socket::SSL
+    *   HTTP::Tiny::Mech - Wrap WWW::Mechanize instance in HTTP::Tiny
+        compatible interface
 
-    *   Mozilla::CA
+    *   IO::Socket::SSL - Required for SSL support
 
-    *   Net::SSLeay
+    *   LWP::UserAgent - If HTTP::Tiny isn't enough for you, this is the
+        "standard" way to do things
+
+    *   Mozilla::CA - Required if you want to validate SSL certificates
+
+    *   Net::SSLeay - Required for SSL support
 
 SUPPORT
   Bugs / Feature Requests
@@ -399,6 +417,8 @@ CONTRIBUTORS
     *   Mike Doherty <doherty@cpan.org>
 
     *   Serguei Trouchelle <stro@cpan.org>
+
+    *   Syohei YOSHIDA <syohex@gmail.com>
 
     *   Tony Cook <tony@develop-help.com>
 

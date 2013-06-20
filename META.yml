@@ -39,7 +39,7 @@ no_index:
 provides:
   HTTP::Tiny:
     file: lib/HTTP/Tiny.pm
-    version: 0.031
+    version: 0.032
 recommends:
   HTTP::CookieJar: 0.001
   IO::Socket::SSL: 1.42
@@ -57,7 +57,7 @@ resources:
   bugtracker: https://github.com/chansen/p5-http-tiny/issues
   homepage: https://metacpan.org/release/HTTP-Tiny
   repository: git://github.com/chansen/p5-http-tiny.git
-version: 0.031
+version: 0.032
 x_contributors:
   - 'Alan Gardner <gardner@pythian.com>'
   - 'Alessandro Ghedini <al3xbio@gmail.com>'
@@ -72,4 +72,5 @@ x_contributors:
   - 'Martin-Louis Bright <mlbright@gmail.com>'
   - 'Mike Doherty <doherty@cpan.org>'
   - 'Serguei Trouchelle <stro@cpan.org>'
+  - 'Syohei YOSHIDA <syohex@gmail.com>'
   - 'Tony Cook <tony@develop-help.com>'

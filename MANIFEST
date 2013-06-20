@@ -33,6 +33,7 @@ t/104_post.t
 t/110_mirror.t
 t/130_redirect.t
 t/140_proxy.t
+t/141_no_proxy.t
 t/150_post_form.t
 t/160_cookies.t
 t/200_live.t
