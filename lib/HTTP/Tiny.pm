@@ -3,14 +3,14 @@ package HTTP::Tiny;
 use strict;
 use warnings;
 # ABSTRACT: A small, simple, correct HTTP/1.1 client
-our $VERSION = '0.032'; # VERSION
+our $VERSION = '0.033'; # VERSION
 
 use Carp ();
 
 
 my @attributes;
 BEGIN {
-    @attributes = qw(agent cookie_jar default_headers local_address max_redirect max_size proxy no_proxy timeout SSL_options verify_SSL);
+    @attributes = qw(cookie_jar default_headers local_address max_redirect max_size proxy no_proxy timeout SSL_options verify_SSL);
     no strict 'refs';
     for my $accessor ( @attributes ) {
         *{$accessor} = sub {
@@ -19,28 +19,34 @@ BEGIN {
     }
 }
 
+sub agent {
+    my($self, $agent) = @_;
+    if( @_ > 1 ){
+        $self->{agent} =
+            (defined $agent && $agent =~ / $/) ? $agent . $self->_agent : $agent;
+    }
+    return $self->{agent};
+}
+
 sub new {
     my($class, %args) = @_;
 
-    (my $default_agent = $class) =~ s{::}{-}g;
-    $default_agent .= "/" . ($class->VERSION || 0);
-
     my $self = {
-        agent        => $default_agent,
         max_redirect => 5,
         timeout      => 60,
         verify_SSL   => $args{verify_SSL} || $args{verify_ssl} || 0, # no verification by default
         no_proxy     => $ENV{no_proxy},
     };
 
-    $args{agent} .= $default_agent
-        if defined $args{agent} && $args{agent} =~ / $/;
+    bless $self, $class;
 
     $class->_validate_cookie_jar( $args{cookie_jar} ) if $args{cookie_jar};
 
     for my $key ( @attributes ) {
         $self->{$key} = $args{$key} if exists $args{$key}
     }
+
+    $self->agent( exists $args{agent} ? $args{agent} : $class->_agent );
 
     # Never override proxy argument as this breaks backwards compat.
     if (!exists $self->{proxy} && (my $http_proxy = $ENV{http_proxy})) {
@@ -58,7 +64,7 @@ sub new {
             (defined $self->{no_proxy}) ? [ split /\s*,\s*/, $self->{no_proxy} ] : [];
     }
 
-    return bless $self, $class;
+    return $self;
 }
 
 
@@ -194,6 +200,12 @@ my %DefaultPort = (
     http => 80,
     https => 443,
 );
+
+sub _agent {
+    my $class = ref($_[0]) || $_[0];
+    (my $default_agent = $class) =~ s{::}{-}g;
+    return $default_agent . "/" . ($class->VERSION || 0);
+}
 
 sub _request {
     my ($self, $method, $url, $args) = @_;
@@ -981,7 +993,7 @@ HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 =head1 VERSION
 
-version 0.032
+version 0.033
 
 =head1 SYNOPSIS
 
@@ -1509,6 +1521,10 @@ Alan Gardner <gardner@pythian.com>
 =item *
 
 Alessandro Ghedini <al3xbio@gmail.com>
+
+=item *
+
+Brad Gilbert <bgills@cpan.org>
 
 =item *
 

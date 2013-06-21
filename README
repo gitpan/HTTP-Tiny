@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.032
+    version 0.033
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -395,6 +395,8 @@ CONTRIBUTORS
     *   Alan Gardner <gardner@pythian.com>
 
     *   Alessandro Ghedini <al3xbio@gmail.com>
+
+    *   Brad Gilbert <bgills@cpan.org>
 
     *   Chris Nehren <apeiron@cpan.org>
 
