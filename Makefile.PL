@@ -22,6 +22,7 @@ my %WriteMakefileArgs = (
   "PREREQ_PM" => {
     "Carp" => 0,
     "IO::Socket" => 0,
+    "MIME::Base64" => 0,
     "Time::Local" => 0,
     "bytes" => 0,
     "strict" => 0,
@@ -44,7 +45,7 @@ my %WriteMakefileArgs = (
     "Test::More" => "0.96",
     "open" => 0
   },
-  "VERSION" => "0.033",
+  "VERSION" => "0.034",
   "test" => {
     "TESTS" => "t/*.t"
   }

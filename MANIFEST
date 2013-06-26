@@ -36,12 +36,16 @@ t/140_proxy.t
 t/141_no_proxy.t
 t/150_post_form.t
 t/160_cookies.t
+t/161_basic_auth.t
 t/200_live.t
 t/200_live_local_ip.t
 t/210_live_ssl.t
 t/BrokenCookieJar.pm
 t/SimpleCookieJar.pm
 t/Util.pm
+t/cases/auth-01.txt
+t/cases/auth-02.txt
+t/cases/auth-03.txt
 t/cases/cookies-01.txt
 t/cases/cookies-02.txt
 t/cases/cookies-03.txt

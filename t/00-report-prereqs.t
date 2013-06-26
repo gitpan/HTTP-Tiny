@@ -27,6 +27,7 @@ my @modules = qw(
   IO::Socket::SSL
   IPC::Cmd
   List::Util
+  MIME::Base64
   Mozilla::CA
   Net::SSLeay
   Test::More
