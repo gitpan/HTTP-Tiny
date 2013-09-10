@@ -5,7 +5,7 @@
       "David Golden <dagolden@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.131560",
+   "generated_by" : "Dist::Zilla version 4.300038, CPAN::Meta::Converter version 2.132510",
    "license" : [
       "perl_5"
    ],
@@ -66,14 +66,15 @@
             "Exporter" : "0",
             "ExtUtils::MakeMaker" : "0",
             "File::Basename" : "0",
-            "File::Find" : "0",
             "File::Spec" : "0",
             "File::Spec::Functions" : "0",
             "File::Temp" : "0",
             "IO::Dir" : "0",
             "IO::File" : "0",
+            "IO::Handle" : "0",
             "IO::Socket::INET" : "0",
             "IPC::Cmd" : "0",
+            "IPC::Open3" : "0",
             "List::Util" : "0",
             "Test::More" : "0.96",
             "open" : "0"
@@ -83,7 +84,7 @@
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.034"
+         "version" : "0.035"
       }
    },
    "release_status" : "stable",
@@ -91,14 +92,15 @@
       "bugtracker" : {
          "web" : "https://github.com/chansen/p5-http-tiny/issues"
       },
-      "homepage" : "https://metacpan.org/release/HTTP-Tiny",
+      "homepage" : "https://github.com/chansen/p5-http-tiny",
       "repository" : {
          "type" : "git",
          "url" : "git://github.com/chansen/p5-http-tiny.git",
          "web" : "https://github.com/chansen/p5-http-tiny"
       }
    },
-   "version" : "0.034",
+   "version" : "0.035",
+   "x_authority" : "cpan:DAGOLDEN",
    "x_contributors" : [
       "Alan Gardner <gardner@pythian.com>",
       "Alessandro Ghedini <al3xbio@gmail.com>",

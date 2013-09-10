@@ -15,17 +15,18 @@ my @modules = qw(
   Exporter
   ExtUtils::MakeMaker
   File::Basename
-  File::Find
   File::Spec
   File::Spec::Functions
   File::Temp
   HTTP::CookieJar
   IO::Dir
   IO::File
+  IO::Handle
   IO::Socket
   IO::Socket::INET
   IO::Socket::SSL
   IPC::Cmd
+  IPC::Open3
   List::Util
   MIME::Base64
   Mozilla::CA

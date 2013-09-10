@@ -6,6 +6,7 @@ META.json
 META.yml
 Makefile.PL
 README
+cpanfile
 dist.ini
 eg/get.pl
 eg/mirror.pl
@@ -58,6 +59,7 @@ t/cases/form-01.txt
 t/cases/form-02.txt
 t/cases/form-03.txt
 t/cases/form-04.txt
+t/cases/form-05.txt
 t/cases/get-01.txt
 t/cases/get-02.txt
 t/cases/get-03.txt

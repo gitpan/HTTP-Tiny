@@ -33,19 +33,20 @@ my %WriteMakefileArgs = (
     "Exporter" => 0,
     "ExtUtils::MakeMaker" => 0,
     "File::Basename" => 0,
-    "File::Find" => 0,
     "File::Spec" => 0,
     "File::Spec::Functions" => 0,
     "File::Temp" => 0,
     "IO::Dir" => 0,
     "IO::File" => 0,
+    "IO::Handle" => 0,
     "IO::Socket::INET" => 0,
     "IPC::Cmd" => 0,
+    "IPC::Open3" => 0,
     "List::Util" => 0,
     "Test::More" => "0.96",
     "open" => 0
   },
-  "VERSION" => "0.034",
+  "VERSION" => "0.035",
   "test" => {
     "TESTS" => "t/*.t"
   }
