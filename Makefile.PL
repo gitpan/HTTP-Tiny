@@ -4,7 +4,7 @@ use warnings;
 
 use 5.006;
 
-use ExtUtils::MakeMaker 6.30;
+use ExtUtils::MakeMaker 6.17;
 
 
 
@@ -13,7 +13,7 @@ my %WriteMakefileArgs = (
   "AUTHOR" => "Christian Hansen <chansen\@cpan.org>, David Golden <dagolden\@cpan.org>",
   "BUILD_REQUIRES" => {},
   "CONFIGURE_REQUIRES" => {
-    "ExtUtils::MakeMaker" => "6.30"
+    "ExtUtils::MakeMaker" => "6.17"
   },
   "DISTNAME" => "HTTP-Tiny",
   "EXE_FILES" => [],
@@ -46,7 +46,7 @@ my %WriteMakefileArgs = (
     "Test::More" => "0.96",
     "open" => 0
   },
-  "VERSION" => "0.035",
+  "VERSION" => "0.036",
   "test" => {
     "TESTS" => "t/*.t"
   }
