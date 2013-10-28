@@ -13,7 +13,6 @@ eg/mirror.pl
 eg/post.pl
 lib/HTTP/Tiny.pm
 perlcritic.rc
-t/00-compile.t
 t/00-report-prereqs.t
 t/000_load.t
 t/001_api.t
@@ -47,6 +46,7 @@ t/Util.pm
 t/cases/auth-01.txt
 t/cases/auth-02.txt
 t/cases/auth-03.txt
+t/cases/auth-04.txt
 t/cases/cookies-01.txt
 t/cases/cookies-02.txt
 t/cases/cookies-03.txt
@@ -102,6 +102,7 @@ t/cases/redirect-06.txt
 t/cases/redirect-07.txt
 t/cases/redirect-08.txt
 t/cases/redirect-09.txt
+xt/author/00-compile.t
 xt/author/critic.t
 xt/author/pod-spell.t
 xt/release/distmeta.t

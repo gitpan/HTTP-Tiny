@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.036
+    version 0.037
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -160,6 +160,11 @@ METHODS
     included in a redirected request.) For example:
 
         $http->request('GET', 'http://Aladdin:open sesame@example.com/');
+
+    If the "user:password" stanza contains reserved characters, they must be
+    percent-escaped:
+
+        $http->request('GET', 'http://john%40example.com:password@example.com/');
 
     A hashref of options may be appended to modify the request.
 
@@ -369,7 +374,13 @@ LIMITATIONS
 
     *   There is no support for IPv6 of any kind.
 
+    Despite the limitations listed above, HTTP::Tiny is considered nearly
+    feature-complete. If there are enhancements unrelated to the underlying
+    transport, please consider them for HTTP::Tiny::UA instead.
+
 SEE ALSO
+    *   HTTP::Tiny::UA — Higher level UA features for HTTP::Tiny
+
     *   HTTP::Thin - HTTP::Tiny wrapper with HTTP::Request/HTTP::Response
         compatibility
 
