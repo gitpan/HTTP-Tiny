@@ -1,5 +1,12 @@
 Release notes for HTTP-Tiny
 
+0.038     2013-11-18 12:56:26 America/New_York
+
+    [FIXED]
+
+    - Fixed a bug where authentication parameters in the URL would override
+      an existing Authorization header
+
 0.037     2013-10-28 13:26:21 America/New_York
 
     [FIXED]
