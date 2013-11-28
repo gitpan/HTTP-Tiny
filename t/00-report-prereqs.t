@@ -18,6 +18,7 @@ my @modules = qw(
   Data::Dumper
   Exporter
   ExtUtils::MakeMaker
+  Fcntl
   File::Basename
   File::Spec
   File::Spec::Functions

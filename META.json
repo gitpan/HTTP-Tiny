@@ -57,6 +57,7 @@
          },
          "requires" : {
             "Carp" : "0",
+            "Fcntl" : "0",
             "IO::Socket" : "0",
             "MIME::Base64" : "0",
             "Time::Local" : "0",
@@ -95,7 +96,7 @@
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.038"
+         "version" : "0.039"
       }
    },
    "release_status" : "stable",
@@ -110,7 +111,7 @@
          "web" : "https://github.com/chansen/p5-http-tiny"
       }
    },
-   "version" : "0.038",
+   "version" : "0.039",
    "x_authority" : "cpan:DAGOLDEN",
    "x_contributors" : [
       "Alan Gardner <gardner@pythian.com>",
@@ -126,6 +127,7 @@
       "Lukas Eklund <leklund@gmail.com>",
       "Martin-Louis Bright <mlbright@gmail.com>",
       "Mike Doherty <doherty@cpan.org>",
+      "Petr P\u00edsa\u0159 <ppisar@redhat.com>",
       "Serguei Trouchelle <stro@cpan.org>",
       "Syohei YOSHIDA <syohex@gmail.com>",
       "Tony Cook <tony@develop-help.com>"

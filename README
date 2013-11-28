@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.038
+    version 0.039
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -441,6 +441,8 @@ CONTRIBUTORS
     *   Martin-Louis Bright <mlbright@gmail.com>
 
     *   Mike Doherty <doherty@cpan.org>
+
+    *   Petr Písař <ppisar@redhat.com>
 
     *   Serguei Trouchelle <stro@cpan.org>
 

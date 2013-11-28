@@ -21,6 +21,7 @@ my %WriteMakefileArgs = (
   "NAME" => "HTTP::Tiny",
   "PREREQ_PM" => {
     "Carp" => 0,
+    "Fcntl" => 0,
     "IO::Socket" => 0,
     "MIME::Base64" => 0,
     "Time::Local" => 0,
@@ -44,7 +45,7 @@ my %WriteMakefileArgs = (
     "Test::More" => "0.96",
     "open" => 0
   },
-  "VERSION" => "0.038",
+  "VERSION" => "0.039",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -56,6 +57,7 @@ my %FallbackPrereqs = (
   "Data::Dumper" => 0,
   "Exporter" => 0,
   "ExtUtils::MakeMaker" => 0,
+  "Fcntl" => 0,
   "File::Basename" => 0,
   "File::Spec" => 0,
   "File::Spec::Functions" => 0,
