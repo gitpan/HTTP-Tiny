@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.039
+    version 0.040
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -26,8 +26,7 @@ DESCRIPTION
     requests without the overhead of a large framework like LWP::UserAgent.
 
     It is more correct and more complete than HTTP::Lite. It supports
-    proxies (currently only non-authenticating ones) and redirection. It
-    also correctly resumes after EINTR.
+    proxies and redirection. It also correctly resumes after EINTR.
 
 METHODS
   new
@@ -55,6 +54,11 @@ METHODS
 
         The local IP address to bind to
 
+    *   "keep_alive"
+
+        Whether to reuse the last connection (if for the same scheme, host
+        and port) (defaults to 1)
+
     *   "max_redirect"
 
         Maximum number of redirects allowed (defaults to 5)
@@ -64,9 +68,20 @@ METHODS
         Maximum response size (only when not using a data callback). If
         defined, responses larger than this will return an exception.
 
+    *   "http_proxy"
+
+        URL of a proxy server to use for HTTP connections (default is
+        $ENV{http_proxy} if set)
+
+    *   "https_proxy"
+
+        URL of a proxy server to use for HTTPS connections (default is
+        $ENV{https_proxy} if set)
+
     *   "proxy"
 
-        URL of a proxy server to use (default is $ENV{http_proxy} if set)
+        URL of a generic proxy server for both HTTP and HTTPS connections
+        (default is $ENV{all_proxy} if set)
 
     *   "no_proxy"
 
@@ -90,6 +105,12 @@ METHODS
     Exceptions from "max_size", "timeout" or other errors will result in a
     pseudo-HTTP status code of 599 and a reason of "Internal Exception". The
     content field in the response will contain the text of the exception.
+
+    The "keep_alive" parameter enables a persistent connection, but only to
+    a single destination scheme, host and port. Also, if any
+    connection-relevant attributes are modified, a persistent connection
+    will be dropped. If you want persistent connections across multiple
+    destinations, use multiple HTTP::Tiny objects.
 
     See "SSL SUPPORT" for more on the "verify_SSL" and "SSL_options"
     attributes.
@@ -263,8 +284,10 @@ SSL SUPPORT
     Direct "https" connections are supported only if IO::Socket::SSL 1.56 or
     greater and Net::SSLeay 1.49 or greater are installed. An exception will
     be thrown if a new enough versions of these modules not installed or if
-    the SSL encryption fails. There is no support for "https" connections
-    via proxy (i.e. RFC 2817).
+    the SSL encryption fails. An "https" connection may be made via an
+    "http" proxy that supports the CONNECT command (i.e. RFC 2817). You may
+    not proxy "https" via a proxy that itself requires "https" to
+    communicate.
 
     SSL provides two distinct capabilities:
 
@@ -326,6 +349,32 @@ SSL SUPPORT
     controlling the choice of cipher used for the SSL connection. See
     IO::Socket::SSL documentation for details.
 
+PROXY SUPPORT
+    HTTP::Tiny can proxy both "http" and "https" requests. Only Basic proxy
+    authorization is supported and it must be provided as part of the proxy
+    URL: "http://user:pass@proxy.example.com/".
+
+    HTTP::Tiny supports the following proxy environment variables:
+
+    *   http_proxy
+
+    *   https_proxy or HTTPS_PROXY
+
+    *   all_proxy or ALL_PROXY
+
+    Tunnelling "https" over an "http" proxy using the CONNECT method is
+    supported. If your proxy uses "https" itself, you can not tunnel "https"
+    over it.
+
+    Be warned that proxying an "https" connection opens you to the risk of a
+    man-in-the-middle attack by the proxy server.
+
+    The "no_proxy" environment variable is supported in the format of a
+    comma-separated list of domain extensions proxy should not be used for.
+
+    Proxy arguments passed to "new" will override their corresponding
+    environment variables.
+
 LIMITATIONS
     HTTP::Tiny is *conditionally compliant* with the HTTP/1.1 specification
     <http://www.w3.org/Protocols/rfc2616/rfc2616.html>. It attempts to meet
@@ -348,20 +397,7 @@ LIMITATIONS
         into a 'GET' redirection, as mandated by the specification. There is
         no automatic support for status 305 ("Use proxy") redirections.
 
-    *   Persistent connections are not supported. The "Connection" header
-        will always be set to "close".
-
     *   Cookie support requires HTTP::CookieJar or an equivalent class.
-
-    *   Only the "http_proxy" environment variable is supported in the
-        format "http://HOST:PORT/". If a "proxy" argument is passed to "new"
-        (including undef), then the "http_proxy" environment variable is
-        ignored.
-
-    *   "no_proxy" environment variable is supported in the format
-        comma-separated list of domain extensions proxy should not be used
-        for. If a "no_proxy" argument is passed to "new", then the
-        "no_proxy" environment variable is ignored.
 
     *   There is no provision for delaying a request body using an "Expect"
         header. Unexpected "1XX" responses are silently ignored as per the
@@ -428,6 +464,8 @@ CONTRIBUTORS
 
     *   Claes Jakobsson <claes@surfar.nu>
 
+    *   Clinton Gormley <clint@traveljury.com>
+
     *   Craig Berry <cberry@cpan.org>
 
     *   David Mitchell <davem@iabyn.com>
@@ -437,6 +475,8 @@ CONTRIBUTORS
     *   Jess Robinson <castaway@desert-island.me.uk>
 
     *   Lukas Eklund <leklund@gmail.com>
+
+    *   Martin J. Evans <mjegh@ntlworld.com>
 
     *   Martin-Louis Bright <mlbright@gmail.com>
 
@@ -451,7 +491,7 @@ CONTRIBUTORS
     *   Tony Cook <tony@develop-help.com>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2013 by Christian Hansen.
+    This software is copyright (c) 2014 by Christian Hansen.
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.
