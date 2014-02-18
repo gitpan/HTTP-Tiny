@@ -68,6 +68,7 @@ my $static_prereqs = do { my $x = {
        'runtime' => {
                       'recommends' => {
                                         'HTTP::CookieJar' => '0.001',
+                                        'IO::Socket::IP' => '0.25',
                                         'IO::Socket::SSL' => '1.42',
                                         'Mozilla::CA' => '20120823',
                                         'Net::SSLeay' => '1.49'
