@@ -1,5 +1,15 @@
 Release notes for HTTP-Tiny
 
+0.043     2014-02-20 20:40:23-05:00 America/New_York
+
+    [FIXED]
+
+    - Does not send absolute request URI when tunneling SSL via proxy
+
+    - Fixes regression in setting host name to verify SSL
+
+    - Protects tests from https_proxy and all_proxy when doing mock testing
+
 0.042     2014-02-18 11:23:17EST-0500 America/New_York
 
     [ADDED]
