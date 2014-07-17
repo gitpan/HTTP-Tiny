@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.043
+    version 0.044
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -41,72 +41,50 @@ METHODS
     This constructor returns a new HTTP::Tiny object. Valid attributes
     include:
 
-    *   "agent"
+    *   "agent" — A user-agent string (defaults to 'HTTP-Tiny/$VERSION'). If
+        "agent" — ends in a space character, the default user-agent string
+        is appended.
 
-        A user-agent string (defaults to 'HTTP-Tiny/$VERSION'). If "agent"
-        ends in a space character, the default user-agent string is
-        appended.
+    *   "cookie_jar" — An instance of HTTP::CookieJar — or equivalent class
+        that supports the "add" and "cookie_header" methods
 
-    *   "cookie_jar"
+    *   "default_headers" — A hashref of default headers to apply to
+        requests
 
-        An instance of HTTP::CookieJar or equivalent class that supports the
-        "add" and "cookie_header" methods
+    *   "local_address" — The local IP address to bind to
 
-    *   "default_headers"
+    *   "keep_alive" — Whether to reuse the last connection (if for the same
+        scheme, host and port) (defaults to 1)
 
-        A hashref of default headers to apply to requests
+    *   "max_redirect" — Maximum number of redirects allowed (defaults to 5)
 
-    *   "local_address"
+    *   "max_size" — Maximum response size (only when not using a data
+        callback). If defined, responses larger than this will return an
+        exception.
 
-        The local IP address to bind to
+    *   "http_proxy" — URL of a proxy server to use for HTTP connections
+        (default is $ENV{http_proxy} — if set)
 
-    *   "keep_alive"
+    *   "https_proxy" — URL of a proxy server to use for HTTPS connections
+        (default is $ENV{https_proxy} — if set)
 
-        Whether to reuse the last connection (if for the same scheme, host
-        and port) (defaults to 1)
+    *   "proxy" — URL of a generic proxy server for both HTTP and HTTPS
+        connections (default is $ENV{all_proxy} — if set)
 
-    *   "max_redirect"
+    *   "no_proxy" — List of domain suffixes that should not be proxied.
+        Must be a comma-separated string or an array reference. (default is
+        $ENV{no_proxy} —)
 
-        Maximum number of redirects allowed (defaults to 5)
+    *   "timeout" — Request timeout in seconds (default is 60)
 
-    *   "max_size"
+    *   "verify_SSL" — A boolean that indicates whether to validate the SSL
+        certificate of an "https" — connection (default is false)
 
-        Maximum response size (only when not using a data callback). If
-        defined, responses larger than this will return an exception.
+    *   "SSL_options" — A hashref of "SSL_*" — options to pass through to
+        IO::Socket::SSL
 
-    *   "http_proxy"
-
-        URL of a proxy server to use for HTTP connections (default is
-        $ENV{http_proxy} if set)
-
-    *   "https_proxy"
-
-        URL of a proxy server to use for HTTPS connections (default is
-        $ENV{https_proxy} if set)
-
-    *   "proxy"
-
-        URL of a generic proxy server for both HTTP and HTTPS connections
-        (default is $ENV{all_proxy} if set)
-
-    *   "no_proxy"
-
-        List of domain suffixes that should not be proxied. Must be a
-        comma-separated string or an array reference. (default is
-        $ENV{no_proxy})
-
-    *   "timeout"
-
-        Request timeout in seconds (default is 60)
-
-    *   "verify_SSL"
-
-        A boolean that indicates whether to validate the SSL certificate of
-        an "https" connection (default is false)
-
-    *   "SSL_options"
-
-        A hashref of "SSL_*" options to pass through to IO::Socket::SSL
+    Passing an explicit "undef" for "proxy", "http_proxy" or "https_proxy"
+    will prevent getting the corresponding proxies from the environment.
 
     Exceptions from "max_size", "timeout" or other errors will result in a
     pseudo-HTTP status code of 599 and a reason of "Internal Exception". The
@@ -197,28 +175,26 @@ METHODS
 
     Valid options are:
 
-    *   "headers"
+    *   "headers" — A hashref containing headers to include with the
+        request. If the value for a header is an array reference, the header
+        will be output multiple times with each value in the array. These
+        headers over-write any default headers.
 
-        A hashref containing headers to include with the request. If the
-        value for a header is an array reference, the header will be output
-        multiple times with each value in the array. These headers
-        over-write any default headers.
+    *   "content" — A scalar to include as the body of the request OR a code
+        reference that will be called iteratively to produce the body of the
+        request
 
-    *   "content"
+    *   "trailer_callback" — A code reference that will be called if it
+        exists to provide a hashref of trailing headers (only used with
+        chunked transfer-encoding)
 
-        A scalar to include as the body of the request OR a code reference
-        that will be called iteratively to produce the body of the request
+    *   "data_callback" — A code reference that will be called for each
+        chunks of the response body received.
 
-    *   "trailer_callback"
-
-        A code reference that will be called if it exists to provide a
-        hashref of trailing headers (only used with chunked
-        transfer-encoding)
-
-    *   "data_callback"
-
-        A code reference that will be called for each chunks of the response
-        body received.
+    The "Host" header is generated from the URL in accordance with RFC 2616.
+    It is a fatal error to specify "Host" in the "headers" option. Other
+    headers may be ignored or overwritten if necessary for transport
+    compliance.
 
     If the "content" option is a code reference, it will be called
     iteratively to provide the content body of the request. It should return
@@ -237,36 +213,25 @@ METHODS
     The "request" method returns a hashref containing the response. The
     hashref will have the following keys:
 
-    *   "success"
+    *   "success" — Boolean indicating whether the operation returned a 2XX
+        status code
 
-        Boolean indicating whether the operation returned a 2XX status code
+    *   "url" — URL that provided the response. This is the URL of the
+        request unless there were redirections, in which case it is the last
+        URL queried in a redirection chain
 
-    *   "url"
+    *   "status" — The HTTP status code of the response
 
-        URL that provided the response. This is the URL of the request
-        unless there were redirections, in which case it is the last URL
-        queried in a redirection chain
+    *   "reason" — The response phrase returned by the server
 
-    *   "status"
+    *   "content" — The body of the response. If the response does not have
+        any content or if a data callback is provided to consume the
+        response body, this will be the empty string
 
-        The HTTP status code of the response
-
-    *   "reason"
-
-        The response phrase returned by the server
-
-    *   "content"
-
-        The body of the response. If the response does not have any content
-        or if a data callback is provided to consume the response body, this
-        will be the empty string
-
-    *   "headers"
-
-        A hashref of header fields. All header field names will be
-        normalized to be lower case. If a header is repeated, the value will
-        be an arrayref; it will otherwise be a scalar string containing the
-        value
+    *   "headers" — A hashref of header fields. All header field names will
+        be normalized to be lower case. If a header is repeated, the value
+        will be an arrayref; it will otherwise be a scalar string containing
+        the value
 
     On an exception during the execution of the request, the "status" field
     will contain 599, and the "content" field will contain the text of the
@@ -287,8 +252,8 @@ METHODS
 SSL SUPPORT
     Direct "https" connections are supported only if IO::Socket::SSL 1.56 or
     greater and Net::SSLeay 1.49 or greater are installed. An exception will
-    be thrown if a new enough versions of these modules not installed or if
-    the SSL encryption fails. An "https" connection may be made via an
+    be thrown if new enough versions of these modules are not installed or
+    if the SSL encryption fails. An "https" connection may be made via an
     "http" proxy that supports the CONNECT command (i.e. RFC 2817). You may
     not proxy "https" via a proxy that itself requires "https" to
     communicate.
@@ -462,7 +427,7 @@ CONTRIBUTORS
 
     *   Chris Nehren <apeiron@cpan.org>
 
-    *   Chris Weyl <cweyl@alumni.drew.edu>
+    *   Chris Weyl <rsrchboy@cpan.org>
 
     *   Claes Jakobsson <claes@surfar.nu>
 
@@ -473,6 +438,8 @@ CONTRIBUTORS
     *   David Mitchell <davem@iabyn.com>
 
     *   Edward Zborowski <ed@rubensteintech.com>
+
+    *   James Raspass <jraspass@gmail.com>
 
     *   Jess Robinson <castaway@desert-island.me.uk>
 

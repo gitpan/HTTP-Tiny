@@ -1,5 +1,18 @@
 Release notes for HTTP-Tiny
 
+0.044     2014-07-16 23:46:09-04:00 America/New_York
+
+    [CHANGED]
+
+    - Providing a custom 'Host' header is now a fatal exception.  Previously, it
+      was silently ignored, as the RFC mandates that Host be set from the
+      URL, but ignoring it could lead to unexpected, confusing errors.
+
+    - optimized URL splitting
+
+    - Passing 'undef' for any proxy attribute will prevent HTTP::Tiny from
+      setting the proxy from the environment.
+
 0.043     2014-02-20 20:40:23-05:00 America/New_York
 
     [FIXED]
