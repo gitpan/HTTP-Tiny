@@ -75,6 +75,7 @@
       "test" : {
          "recommends" : {
             "CPAN::Meta" : "0",
+            "CPAN::Meta::Prereqs" : "0",
             "CPAN::Meta::Requirements" : "2.120900"
          },
          "requires" : {
@@ -90,19 +91,20 @@
             "IO::Socket::INET" : "0",
             "IPC::Cmd" : "0",
             "List::Util" : "0",
+            "Scalar::Util" : "0",
             "Test::More" : "0.96",
             "open" : "0",
-            "version" : "0"
+            "version" : "0.77"
          }
       }
    },
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.044"
+         "version" : "0.045"
       }
    },
-   "release_status" : "stable",
+   "release_status" : "testing",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/chansen/p5-http-tiny/issues"
@@ -114,7 +116,7 @@
          "web" : "https://github.com/chansen/p5-http-tiny"
       }
    },
-   "version" : "0.044",
+   "version" : "0.045",
    "x_authority" : "cpan:DAGOLDEN",
    "x_contributors" : [
       "Alan Gardner <gardner@pythian.com>",

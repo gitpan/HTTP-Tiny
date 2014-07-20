@@ -42,11 +42,12 @@ my %WriteMakefileArgs = (
     "IO::Socket::INET" => 0,
     "IPC::Cmd" => 0,
     "List::Util" => 0,
+    "Scalar::Util" => 0,
     "Test::More" => "0.96",
     "open" => 0,
-    "version" => 0
+    "version" => "0.77"
   },
-  "VERSION" => "0.044",
+  "VERSION" => "0.045",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -70,12 +71,13 @@ my %FallbackPrereqs = (
   "IPC::Cmd" => 0,
   "List::Util" => 0,
   "MIME::Base64" => 0,
+  "Scalar::Util" => 0,
   "Test::More" => "0.96",
   "Time::Local" => 0,
   "bytes" => 0,
   "open" => 0,
   "strict" => 0,
-  "version" => 0,
+  "version" => "0.77",
   "warnings" => 0
 );
 
