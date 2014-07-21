@@ -3,7 +3,7 @@ package HTTP::Tiny;
 use strict;
 use warnings;
 # ABSTRACT: A small, simple, correct HTTP/1.1 client
-our $VERSION = '0.045'; # TRIAL VERSION
+our $VERSION = '0.046'; # VERSION
 
 use Carp ();
 
@@ -1149,8 +1149,7 @@ sub write_header_lines {
             $HeaderCase{lc $field_name} = $field_name;
         }
         for (ref $v eq 'ARRAY' ? @$v : $v) {
-            /[^\x0D\x0A]/
-              or die(qq/Invalid HTTP header field value ($field_name): / . $Printable->($_). "\n");
+            $_ = '' unless defined $_;
             $buf .= "$field_name: $_\x0D\x0A";
         }
     }
@@ -1445,7 +1444,7 @@ HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 =head1 VERSION
 
-version 0.045
+version 0.046
 
 =head1 SYNOPSIS
 
@@ -1859,9 +1858,40 @@ environment variables.
 =head1 LIMITATIONS
 
 HTTP::Tiny is I<conditionally compliant> with the
-L<HTTP/1.1 specification|http://www.w3.org/Protocols/rfc2616/rfc2616.html>.
+L<HTTP/1.1 specifications|http://www.w3.org/Protocols/>:
+
+=over 4
+
+=item *
+
+"Message Syntax and Routing" [RFC7230]
+
+=item *
+
+"Semantics and Content" [RFC7231]
+
+=item *
+
+"Conditional Requests" [RFC7232]
+
+=item *
+
+"Range Requests" [RFC7233]
+
+=item *
+
+"Caching" [RFC7234]
+
+=item *
+
+"Authentication" [RFC7235]
+
+=back
+
 It attempts to meet all "MUST" requirements of the specification, but does not
-implement all "SHOULD" requirements.
+implement all "SHOULD" requirements.  (Note: it was developed against the
+earlier RFC 2616 specification and may not yet meet the revised RFC 7230-7235
+spec.)
 
 Some particular limitations of note include:
 
@@ -2056,6 +2086,10 @@ Serguei Trouchelle <stro@cpan.org>
 =item *
 
 Syohei YOSHIDA <syohex@gmail.com>
+
+=item *
+
+Sören Kornetzki <soeren.kornetzki@delti.com>
 
 =item *
 

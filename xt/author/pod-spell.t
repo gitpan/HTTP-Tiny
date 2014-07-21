@@ -73,6 +73,9 @@ stro
 Syohei
 YOSHIDA
 syohex
+Sören
+Kornetzki
+soeren
 Tony
 Cook
 tony

@@ -101,10 +101,10 @@
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.045"
+         "version" : "0.046"
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/chansen/p5-http-tiny/issues"
@@ -116,7 +116,7 @@
          "web" : "https://github.com/chansen/p5-http-tiny"
       }
    },
-   "version" : "0.045",
+   "version" : "0.046",
    "x_authority" : "cpan:DAGOLDEN",
    "x_contributors" : [
       "Alan Gardner <gardner@pythian.com>",
@@ -138,6 +138,7 @@
       "Petr Písař <ppisar@redhat.com>",
       "Serguei Trouchelle <stro@cpan.org>",
       "Syohei YOSHIDA <syohex@gmail.com>",
+      "Sören Kornetzki <soeren.kornetzki@delti.com>",
       "Tony Cook <tony@develop-help.com>"
    ]
 }
