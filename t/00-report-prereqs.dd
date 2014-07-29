@@ -9,7 +9,7 @@ do { my $x = {
                                       'Dist::Zilla' => '5',
                                       'Dist::Zilla::Plugin::Prereqs' => '0',
                                       'Dist::Zilla::Plugin::RemovePrereqs' => '0',
-                                      'Dist::Zilla::PluginBundle::DAGOLDEN' => '0.060',
+                                      'Dist::Zilla::PluginBundle::DAGOLDEN' => '0.068',
                                       'File::Spec' => '0',
                                       'File::Temp' => '0',
                                       'IO::Handle' => '0',
@@ -27,7 +27,7 @@ do { my $x = {
                                         'HTTP::CookieJar' => '0.001',
                                         'IO::Socket::IP' => '0.25',
                                         'IO::Socket::SSL' => '1.42',
-                                        'Mozilla::CA' => '20120823',
+                                        'Mozilla::CA' => '20130114',
                                         'Net::SSLeay' => '1.49'
                                       },
                       'requires' => {
@@ -47,9 +47,7 @@ do { my $x = {
                     },
        'test' => {
                    'recommends' => {
-                                     'CPAN::Meta' => '0',
-                                     'CPAN::Meta::Prereqs' => '0',
-                                     'CPAN::Meta::Requirements' => '2.120900'
+                                     'CPAN::Meta' => '2.120900'
                                    },
                    'requires' => {
                                    'Data::Dumper' => '0',
@@ -66,8 +64,7 @@ do { my $x = {
                                    'List::Util' => '0',
                                    'Scalar::Util' => '0',
                                    'Test::More' => '0.96',
-                                   'open' => '0',
-                                   'version' => '0.77'
+                                   'open' => '0'
                                  }
                  }
      };

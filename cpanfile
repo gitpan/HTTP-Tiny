@@ -10,7 +10,7 @@ requires "warnings" => "0";
 recommends "HTTP::CookieJar" => "0.001";
 recommends "IO::Socket::IP" => "0.25";
 recommends "IO::Socket::SSL" => "1.42";
-recommends "Mozilla::CA" => "20120823";
+recommends "Mozilla::CA" => "20130114";
 recommends "Net::SSLeay" => "1.49";
 suggests "IO::Socket::SSL" => "1.56";
 
@@ -30,13 +30,10 @@ on 'test' => sub {
   requires "Scalar::Util" => "0";
   requires "Test::More" => "0.96";
   requires "open" => "0";
-  requires "version" => "0.77";
 };
 
 on 'test' => sub {
-  recommends "CPAN::Meta" => "0";
-  recommends "CPAN::Meta::Prereqs" => "0";
-  recommends "CPAN::Meta::Requirements" => "2.120900";
+  recommends "CPAN::Meta" => "2.120900";
 };
 
 on 'configure' => sub {
@@ -47,7 +44,7 @@ on 'develop' => sub {
   requires "Dist::Zilla" => "5";
   requires "Dist::Zilla::Plugin::Prereqs" => "0";
   requires "Dist::Zilla::Plugin::RemovePrereqs" => "0";
-  requires "Dist::Zilla::PluginBundle::DAGOLDEN" => "0.060";
+  requires "Dist::Zilla::PluginBundle::DAGOLDEN" => "0.068";
   requires "File::Spec" => "0";
   requires "File::Temp" => "0";
   requires "IO::Handle" => "0";

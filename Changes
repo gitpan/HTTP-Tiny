@@ -1,5 +1,15 @@
 Release notes for HTTP-Tiny
 
+0.047     2014-07-29 14:09:05-04:00 America/New_York
+
+    [CHANGED]
+
+    - Updated Mozilla::CA module recommendation version to 20130114
+
+    [FIXED]
+
+    - Fixed t/00-report-prereqs.t when CPAN::Meta is not installed
+
 0.046     2014-07-21 10:32:32-04:00 America/New_York
 
     [FIXED]
