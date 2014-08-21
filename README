@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.047
+    version 0.048
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -436,24 +436,6 @@ AUTHORS
 CONTRIBUTORS
     *   Alan Gardner <gardner@pythian.com>
 
-    *   Alessandro Ghedini <al3xbio@gmail.com>
-
-    *   Brad Gilbert <bgills@cpan.org>
-
-    *   Chris Nehren <apeiron@cpan.org>
-
-    *   Chris Weyl <rsrchboy@cpan.org>
-
-    *   Claes Jakobsson <claes@surfar.nu>
-
-    *   Clinton Gormley <clint@traveljury.com>
-
-    *   Craig Berry <cberry@cpan.org>
-
-    *   David Mitchell <davem@iabyn.com>
-
-    *   Edward Zborowski <ed@rubensteintech.com>
-
     *   James Raspass <jraspass@gmail.com>
 
     *   Jess Robinson <castaway@desert-island.me.uk>
@@ -474,7 +456,27 @@ CONTRIBUTORS
 
     *   Sören Kornetzki <soeren.kornetzki@delti.com>
 
+    *   Alessandro Ghedini <al3xbio@gmail.com>
+
+    *   Tom Hukins <tom@eborcom.com>
+
     *   Tony Cook <tony@develop-help.com>
+
+    *   Brad Gilbert <bgills@cpan.org>
+
+    *   Chris Nehren <apeiron@cpan.org>
+
+    *   Chris Weyl <rsrchboy@cpan.org>
+
+    *   Claes Jakobsson <claes@surfar.nu>
+
+    *   Clinton Gormley <clint@traveljury.com>
+
+    *   Craig Berry <cberry@cpan.org>
+
+    *   David Mitchell <davem@iabyn.com>
+
+    *   Edward Zborowski <ed@rubensteintech.com>
 
 COPYRIGHT AND LICENSE
     This software is copyright (c) 2014 by Christian Hansen.

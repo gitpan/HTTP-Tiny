@@ -55,14 +55,11 @@ do { my $x = {
                                    'ExtUtils::MakeMaker' => '0',
                                    'File::Basename' => '0',
                                    'File::Spec' => '0',
-                                   'File::Spec::Functions' => '0',
                                    'File::Temp' => '0',
                                    'IO::Dir' => '0',
                                    'IO::File' => '0',
                                    'IO::Socket::INET' => '0',
                                    'IPC::Cmd' => '0',
-                                   'List::Util' => '0',
-                                   'Scalar::Util' => '0',
                                    'Test::More' => '0.96',
                                    'open' => '0'
                                  }

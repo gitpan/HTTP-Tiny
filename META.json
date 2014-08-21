@@ -5,7 +5,7 @@
       "David Golden <dagolden@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 5.020, CPAN::Meta::Converter version 2.142060",
+   "generated_by" : "Dist::Zilla version 5.020, CPAN::Meta::Converter version 2.140640",
    "license" : [
       "perl_5"
    ],
@@ -82,14 +82,11 @@
             "ExtUtils::MakeMaker" : "0",
             "File::Basename" : "0",
             "File::Spec" : "0",
-            "File::Spec::Functions" : "0",
             "File::Temp" : "0",
             "IO::Dir" : "0",
             "IO::File" : "0",
             "IO::Socket::INET" : "0",
             "IPC::Cmd" : "0",
-            "List::Util" : "0",
-            "Scalar::Util" : "0",
             "Test::More" : "0.96",
             "open" : "0"
          }
@@ -98,7 +95,7 @@
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.047"
+         "version" : "0.048"
       }
    },
    "release_status" : "stable",
@@ -113,7 +110,7 @@
          "web" : "https://github.com/chansen/p5-http-tiny"
       }
    },
-   "version" : "0.047",
+   "version" : "0.048",
    "x_authority" : "cpan:DAGOLDEN",
    "x_contributors" : [
       "Alan Gardner <gardner@pythian.com>",
@@ -136,6 +133,7 @@
       "Serguei Trouchelle <stro@cpan.org>",
       "Syohei YOSHIDA <syohex@gmail.com>",
       "Sören Kornetzki <soeren.kornetzki@delti.com>",
+      "Tom Hukins <tom@eborcom.com>",
       "Tony Cook <tony@develop-help.com>"
    ]
 }
