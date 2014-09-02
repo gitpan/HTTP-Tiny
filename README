@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.048
+    version 0.049
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -92,9 +92,10 @@ METHODS
 
     The "keep_alive" parameter enables a persistent connection, but only to
     a single destination scheme, host and port. Also, if any
-    connection-relevant attributes are modified, a persistent connection
-    will be dropped. If you want persistent connections across multiple
-    destinations, use multiple HTTP::Tiny objects.
+    connection-relevant attributes are modified, or if the process ID or
+    thread ID change, the persistent connection will be dropped. If you want
+    persistent connections across multiple destinations, use multiple
+    HTTP::Tiny objects.
 
     See "SSL SUPPORT" for more on the "verify_SSL" and "SSL_options"
     attributes.
