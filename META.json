@@ -95,7 +95,7 @@
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.049"
+         "version" : "0.050"
       }
    },
    "release_status" : "stable",
@@ -110,7 +110,7 @@
          "web" : "https://github.com/chansen/p5-http-tiny"
       }
    },
-   "version" : "0.049",
+   "version" : "0.050",
    "x_authority" : "cpan:DAGOLDEN",
    "x_contributors" : [
       "Alan Gardner <gardner@pythian.com>",
@@ -122,6 +122,7 @@
       "Clinton Gormley <clint@traveljury.com>",
       "Craig Berry <cberry@cpan.org>",
       "David Mitchell <davem@iabyn.com>",
+      "Dean Pearce <pearce@pythian.com>",
       "Edward Zborowski <ed@rubensteintech.com>",
       "James Raspass <jraspass@gmail.com>",
       "Jess Robinson <castaway@desert-island.me.uk>",

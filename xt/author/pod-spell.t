@@ -44,6 +44,9 @@ Berry
 cberry
 Mitchell
 davem
+Dean
+Pearce
+pearce
 Edward
 Zborowski
 ed

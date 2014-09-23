@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.049
+    version 0.050
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -437,6 +437,8 @@ AUTHORS
 CONTRIBUTORS
     *   Alan Gardner <gardner@pythian.com>
 
+    *   Edward Zborowski <ed@rubensteintech.com>
+
     *   James Raspass <jraspass@gmail.com>
 
     *   Jess Robinson <castaway@desert-island.me.uk>
@@ -455,9 +457,9 @@ CONTRIBUTORS
 
     *   Syohei YOSHIDA <syohex@gmail.com>
 
-    *   Sören Kornetzki <soeren.kornetzki@delti.com>
-
     *   Alessandro Ghedini <al3xbio@gmail.com>
+
+    *   Sören Kornetzki <soeren.kornetzki@delti.com>
 
     *   Tom Hukins <tom@eborcom.com>
 
@@ -477,7 +479,7 @@ CONTRIBUTORS
 
     *   David Mitchell <davem@iabyn.com>
 
-    *   Edward Zborowski <ed@rubensteintech.com>
+    *   Dean Pearce <pearce@pythian.com>
 
 COPYRIGHT AND LICENSE
     This software is copyright (c) 2014 by Christian Hansen.
