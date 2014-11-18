@@ -1,7 +1,8 @@
 do { my $x = {
        'configure' => {
                         'requires' => {
-                                        'ExtUtils::MakeMaker' => '6.17'
+                                        'ExtUtils::MakeMaker' => '6.17',
+                                        'perl' => '5.006'
                                       }
                       },
        'develop' => {
@@ -9,7 +10,7 @@ do { my $x = {
                                       'Dist::Zilla' => '5',
                                       'Dist::Zilla::Plugin::Prereqs' => '0',
                                       'Dist::Zilla::Plugin::RemovePrereqs' => '0',
-                                      'Dist::Zilla::PluginBundle::DAGOLDEN' => '0.068',
+                                      'Dist::Zilla::PluginBundle::DAGOLDEN' => '0.072',
                                       'File::Spec' => '0',
                                       'File::Temp' => '0',
                                       'IO::Handle' => '0',
@@ -61,7 +62,8 @@ do { my $x = {
                                    'IO::Socket::INET' => '0',
                                    'IPC::Cmd' => '0',
                                    'Test::More' => '0.96',
-                                   'open' => '0'
+                                   'open' => '0',
+                                   'perl' => '5.006'
                                  }
                  }
      };

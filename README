@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.050
+    version 0.051
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -437,6 +437,24 @@ AUTHORS
 CONTRIBUTORS
     *   Alan Gardner <gardner@pythian.com>
 
+    *   Alessandro Ghedini <al3xbio@gmail.com>
+
+    *   Brad Gilbert <bgills@cpan.org>
+
+    *   Chris Nehren <apeiron@cpan.org>
+
+    *   Chris Weyl <cweyl@alumni.drew.edu>
+
+    *   Claes Jakobsson <claes@surfar.nu>
+
+    *   Clinton Gormley <clint@traveljury.com>
+
+    *   Craig Berry <cberry@cpan.org>
+
+    *   David Mitchell <davem@iabyn.com>
+
+    *   Dean Pearce <pearce@pythian.com>
+
     *   Edward Zborowski <ed@rubensteintech.com>
 
     *   James Raspass <jraspass@gmail.com>
@@ -455,31 +473,13 @@ CONTRIBUTORS
 
     *   Serguei Trouchelle <stro@cpan.org>
 
-    *   Syohei YOSHIDA <syohex@gmail.com>
-
-    *   Alessandro Ghedini <al3xbio@gmail.com>
-
     *   Sören Kornetzki <soeren.kornetzki@delti.com>
+
+    *   Syohei YOSHIDA <syohex@gmail.com>
 
     *   Tom Hukins <tom@eborcom.com>
 
     *   Tony Cook <tony@develop-help.com>
-
-    *   Brad Gilbert <bgills@cpan.org>
-
-    *   Chris Nehren <apeiron@cpan.org>
-
-    *   Chris Weyl <rsrchboy@cpan.org>
-
-    *   Claes Jakobsson <claes@surfar.nu>
-
-    *   Clinton Gormley <clint@traveljury.com>
-
-    *   Craig Berry <cberry@cpan.org>
-
-    *   David Mitchell <davem@iabyn.com>
-
-    *   Dean Pearce <pearce@pythian.com>
 
 COPYRIGHT AND LICENSE
     This software is copyright (c) 2014 by Christian Hansen.

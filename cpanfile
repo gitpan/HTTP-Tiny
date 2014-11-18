@@ -27,6 +27,7 @@ on 'test' => sub {
   requires "IPC::Cmd" => "0";
   requires "Test::More" => "0.96";
   requires "open" => "0";
+  requires "perl" => "5.006";
 };
 
 on 'test' => sub {
@@ -35,13 +36,14 @@ on 'test' => sub {
 
 on 'configure' => sub {
   requires "ExtUtils::MakeMaker" => "6.17";
+  requires "perl" => "5.006";
 };
 
 on 'develop' => sub {
   requires "Dist::Zilla" => "5";
   requires "Dist::Zilla::Plugin::Prereqs" => "0";
   requires "Dist::Zilla::Plugin::RemovePrereqs" => "0";
-  requires "Dist::Zilla::PluginBundle::DAGOLDEN" => "0.068";
+  requires "Dist::Zilla::PluginBundle::DAGOLDEN" => "0.072";
   requires "File::Spec" => "0";
   requires "File::Temp" => "0";
   requires "IO::Handle" => "0";

@@ -5,7 +5,7 @@
       "David Golden <dagolden@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 5.020, CPAN::Meta::Converter version 2.140640",
+   "generated_by" : "Dist::Zilla version 5.025, CPAN::Meta::Converter version 2.142690",
    "license" : [
       "perl_5"
    ],
@@ -28,7 +28,8 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "6.17"
+            "ExtUtils::MakeMaker" : "6.17",
+            "perl" : "5.006"
          }
       },
       "develop" : {
@@ -36,7 +37,7 @@
             "Dist::Zilla" : "5",
             "Dist::Zilla::Plugin::Prereqs" : "0",
             "Dist::Zilla::Plugin::RemovePrereqs" : "0",
-            "Dist::Zilla::PluginBundle::DAGOLDEN" : "0.068",
+            "Dist::Zilla::PluginBundle::DAGOLDEN" : "0.072",
             "File::Spec" : "0",
             "File::Temp" : "0",
             "IO::Handle" : "0",
@@ -88,14 +89,15 @@
             "IO::Socket::INET" : "0",
             "IPC::Cmd" : "0",
             "Test::More" : "0.96",
-            "open" : "0"
+            "open" : "0",
+            "perl" : "5.006"
          }
       }
    },
    "provides" : {
       "HTTP::Tiny" : {
          "file" : "lib/HTTP/Tiny.pm",
-         "version" : "0.050"
+         "version" : "0.051"
       }
    },
    "release_status" : "stable",
@@ -110,14 +112,14 @@
          "web" : "https://github.com/chansen/p5-http-tiny"
       }
    },
-   "version" : "0.050",
+   "version" : "0.051",
    "x_authority" : "cpan:DAGOLDEN",
    "x_contributors" : [
       "Alan Gardner <gardner@pythian.com>",
       "Alessandro Ghedini <al3xbio@gmail.com>",
       "Brad Gilbert <bgills@cpan.org>",
       "Chris Nehren <apeiron@cpan.org>",
-      "Chris Weyl <rsrchboy@cpan.org>",
+      "Chris Weyl <cweyl@alumni.drew.edu>",
       "Claes Jakobsson <claes@surfar.nu>",
       "Clinton Gormley <clint@traveljury.com>",
       "Craig Berry <cberry@cpan.org>",
@@ -132,8 +134,8 @@
       "Mike Doherty <doherty@cpan.org>",
       "Petr Písař <ppisar@redhat.com>",
       "Serguei Trouchelle <stro@cpan.org>",
-      "Syohei YOSHIDA <syohex@gmail.com>",
       "Sören Kornetzki <soeren.kornetzki@delti.com>",
+      "Syohei YOSHIDA <syohex@gmail.com>",
       "Tom Hukins <tom@eborcom.com>",
       "Tony Cook <tony@develop-help.com>"
    ]

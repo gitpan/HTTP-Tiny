@@ -32,7 +32,7 @@ Chris
 Nehren
 apeiron
 Weyl
-rsrchboy
+cweyl
 Claes
 Jakobsson
 claes
@@ -73,12 +73,12 @@ ppisar
 Serguei
 Trouchelle
 stro
-Syohei
-YOSHIDA
-syohex
 Sören
 Kornetzki
 soeren
+Syohei
+YOSHIDA
+syohex
 Tom
 Hukins
 tom
