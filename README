@@ -2,7 +2,7 @@ NAME
     HTTP::Tiny - A small, simple, correct HTTP/1.1 client
 
 VERSION
-    version 0.051
+    version 0.052
 
 SYNOPSIS
         use HTTP::Tiny;
@@ -326,11 +326,16 @@ PROXY SUPPORT
 
     HTTP::Tiny supports the following proxy environment variables:
 
-    *   http_proxy
+    *   http_proxy or HTTP_PROXY
 
     *   https_proxy or HTTPS_PROXY
 
     *   all_proxy or ALL_PROXY
+
+    If the "REQUEST_METHOD" environment variable is set, then this might be
+    a CGI process and "HTTP_PROXY" would be set from the "Proxy:" header,
+    which is a security risk. If "REQUEST_METHOD" is set, "HTTP_PROXY" (the
+    upper case variant only) is ignored.
 
     Tunnelling "https" over an "http" proxy using the CONNECT method is
     supported. If your proxy uses "https" itself, you can not tunnel "https"
